@@ -18,8 +18,8 @@ public:
     set<K> keySet();
     bool containsKey(  K& key);
     void Insert(pair<K,V>  k_v);
-    V& Remove(  K &key);
-    V& Remove(  K& key,  V& val);
+    V Remove(  K &key);
+    V Remove(  K& key,  V val);
     void Clear();
     int getSize();
     void resizeTable();
@@ -32,7 +32,8 @@ private:
 template<class K, class V>
 HashMap<K, V>::~HashMap()
 {
-
+    Clear();
+    delete map;
 }
 
 template<class K,class V>
@@ -64,26 +65,28 @@ template<class K,class V>
 void HashMap<K,V>::Insert(pair<K,V>  k_v){
     K key=k_v.first;
     map->Insert(key,k_v);
+    hashset.insert(key);
 }
 
 template<class K,class V>
-V& HashMap<K,V>::Remove(  K& key){
+V HashMap<K,V>::Remove(  K& key){
     int bucket;
     if(map->findPos(key,bucket)){
         V val=getValue(key);
         map->Remove(key);
+        hashset.erase(key);
         return  val;
     }
-    V *t = NULL;
-    return *t;
+    return V();
 }
 
 template<class K,class V>
-V&  HashMap<K,V>::Remove(  K& key,  V&val){
+V  HashMap<K,V>::Remove(  K& key,  V val){
     int bucket;
     pair<K,V> p=map->findPos(key,bucket)->data;
     if(p.second==val){
         map->Remove(key);
+        hashset.erase(key);
         return val;
     }
     return V();
