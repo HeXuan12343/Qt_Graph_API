@@ -211,7 +211,8 @@ void DbLinkedList<K , E>::Clear()
     DblNode<K , E> *del = first->rLink;
     auto p = del;
     while (p != first) {
-        first->rLink = del->rLink;
+        del=p;
+        first->rLink = del->rLink;     
         del->rLink->lLink = first;
         p = del->rLink;
         delete del;

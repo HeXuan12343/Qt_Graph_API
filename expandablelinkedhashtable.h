@@ -130,7 +130,7 @@ void ExpandableLinkedHashTable<K,E>::Clear(){
     for(int i=0;i<getSize();i++){
         if(HashTable[i]){
             HashTable[i]->Clear();
-            delete HashTable[i];
+            HashTable[i]=NULL;
         }
     }
     HashTable.Clear();
