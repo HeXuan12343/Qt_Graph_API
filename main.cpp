@@ -55,11 +55,13 @@ int main(int argc, char *argv[])
     m.Insert(ptest2);
     std::string test = "北京";
     std::string test2 = "北方";
-
+    std::string test3="南京";
+    m.Clear();
     qDebug()<<m.getValue(test);
     qDebug()<<m.getValue(test2);
-    m.Remove(test2);
+    m.Remove(test2,0);
     qDebug()<<m.getValue(test2);
+//    m.resizeTable();
     return a.exec();
 }
 

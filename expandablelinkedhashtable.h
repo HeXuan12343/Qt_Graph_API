@@ -18,7 +18,7 @@ public:
         LoadFactor=maxLoadFactor;
     }
     ~ExpandableLinkedHashTable(){
-        delete [] HashTable;
+        HashTable.Clear();
     }
 
     DblNode<K,E> *findPos( K& key,int &bucket) ;
@@ -29,6 +29,7 @@ public:
     void Clear();
     int getCapacity() {return TableSize;}//获取容量
     int getSize() {return getdivisor(TableSize);}//获取桶数
+    int getBucketcount();//获取非空桶数量
     int getBucket(  K& k) {//返回k对应桶号
         return hashcode(k);
     }
@@ -88,7 +89,7 @@ bool ExpandableLinkedHashTable<K,E>::Insert(  K& key,  E& e){
         HashTable[bucket]=new DbLinkedList<K,E>();
         HashTable[bucket]->Append(key,e);
         BucketSize++;
-        if(double(getSize()/getCapacity())>LoadFactor)
+        if(double(getBucketcount()/getCapacity())>LoadFactor)
             resizeTable();
         return true;
     }
@@ -108,15 +109,19 @@ template <class K, class E>
 void ExpandableLinkedHashTable<K,E>::resizeTable(){
     int i=getdivisor(this->TableSize);
     this->TableSize=getdivisor(TableSize*2);
-
-    HashTable.resizeList(TableSize);
+    ExpandableArrayList<DbLinkedList<K,E>*> newHashTable(TableSize);
+//    HashTable.resizeList(TableSize);
     for(int j=0;j<i;j++){
-        if(!HashTable[j]){
+        if(HashTable[j]){//如果该桶不空
             DblNode<K,E> *p=HashTable[j]->getFirst()->rLink;
                 int bucket=getBucket(p->key);
-                ExpandableArrayList<DbLinkedList<K,E>*> newHashTable;
+
                 newHashTable[bucket]=HashTable[j];
         }
+    }
+    HashTable.resizeList(TableSize);
+    for(int j=0;j<TableSize;j++){
+        HashTable[j]=newHashTable[j];
     }
 }
 
@@ -128,8 +133,18 @@ void ExpandableLinkedHashTable<K,E>::Clear(){
             delete HashTable[i];
         }
     }
-    HashTable->Clear();
+    HashTable.Clear();
 
+}
+
+template<class K, class E>
+int ExpandableLinkedHashTable<K,E>::getBucketcount()
+{
+    int count=0;
+    for(int i=0;i<getSize();i++)
+        if(HashTable[i])
+            count++;
+    return  count;
 }
 
 template<class K, class E>
