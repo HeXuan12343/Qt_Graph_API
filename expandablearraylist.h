@@ -35,8 +35,7 @@ ExpandableArrayList<T>::ExpandableArrayList(size_t size)
 template<typename T>
 void ExpandableArrayList<T>::Clear()
 {
-    delete [] data;
-    currentSize = 0;
+    this->resizeList(0);
 }
 
 template<typename T>

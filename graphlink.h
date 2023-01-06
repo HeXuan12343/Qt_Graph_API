@@ -86,8 +86,8 @@ public:
     int vertexCount();//返回图中顶点的个数
     int edgeCount();//返回图中边的个数
     Vertex<V , W> *getVertices();//返回包含所有顶点的数组
-    void addVertex(Vertex<V , W> ver);//添加顶点
-    void removeVertex(Vertex<V , W> ver);//删除顶点
+    void addVertex(V ver);//添加顶点
+    void removeVertex(V ver);//删除顶点
     bool isVertex(Vertex<V , W> ver);//判断该顶点是否在图中
     int Degree(Vertex<V , W> ver);//顶点的度
     Neighbors<V , W> getNeighbors(Vertex<V , W> ver);//返回顶点的所有邻接顶点
@@ -96,8 +96,8 @@ public:
     bool isEdge(Vertex<V , W> ver1 , Vertex<V , W> ver2);//判断边是否在图中
     W getWeight(Vertex<V , W> ver1 , Vertex<V , W> ver2);//求某边的权值
 private:
-    HashMap<V , VertexForHash<V , W>> verMap;//顶点散列映射
-    HashMap<V , EdgeForHash<V , W>> edgMap;//边散列映射
+    HashMap<V , int> verMap;//顶点散列映射
+    HashMap<V , int> edgMap;//边散列映射
     DbLinkedList<V , int> verList;//顶点双链表,规定顶点的值为整数
     int vertexNum;//顶点数量
     int edgeNum;//边数量
@@ -140,13 +140,20 @@ Vertex<V, W> *WUSGraph<V, W>::getVertices()//获取包含所有顶点的数组
 
 
 template<typename V, typename W>
-void WUSGraph<V, W>::addVertex(Vertex<V, W> ver)//插入顶点
+void WUSGraph<V, W>::addVertex(V ver)//插入顶点
 {
     if(isVertex(ver))//如果顶点已经在图中，返回
         return;
-    VertexForHash<V , W> vForHash(ver.data , insertOder);//创建要存储到哈希表中的顶点对象
-    Vertex<int, W> vForList(insertOder);//转换成整数顶点存入顶点链表
-    verList.Append(vForList);
+    std::pair<V , int> pai(ver , insertOder);//创建映射
+    verMap.Insert(pai);//将映射对存入map
+    verList.Append(insertOder);//将整数值存入定点表
+    insertOder++;//更新顶点的整数值
+
+}
+
+template<typename V, typename W>
+void WUSGraph<V, W>::removeVertex(V ver)
+{
 
 }
 
