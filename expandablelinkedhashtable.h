@@ -65,6 +65,7 @@ DblNode<K,E>* ExpandableLinkedHashTable<K,E>::findPos( K& key,int &bucket) {
 
 template <class K, class E>
 bool ExpandableLinkedHashTable<K,E>::Search(  K& key) {
+    if(TableSize==0) return  false;
     int bucket=getBucket(key);
     if(HashTable[bucket])
         return true;
@@ -99,10 +100,12 @@ bool ExpandableLinkedHashTable<K,E>::Insert(  K& key,  E& e){
 
 template <class K, class E>
 int ExpandableLinkedHashTable<K,E>::Remove(  K& key){
+    if(TableSize==0) return  0;
     int bucket=getBucket(key);
     if(HashTable[bucket]->Remove(key)){
         return 1;
     }
+    return 0;
 }
 
 template <class K, class E>
@@ -134,7 +137,7 @@ void ExpandableLinkedHashTable<K,E>::Clear(){
         }
     }
     HashTable.Clear();
-
+    TableSize=0;
 }
 
 template<class K, class E>

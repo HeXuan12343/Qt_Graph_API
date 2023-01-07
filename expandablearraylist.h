@@ -35,7 +35,7 @@ ExpandableArrayList<T>::ExpandableArrayList(size_t size)
 template<typename T>
 void ExpandableArrayList<T>::Clear()
 {
-    this->resizeList(0);//保留长度为0的数组
+    resizeList(0);
 }
 
 template<typename T>

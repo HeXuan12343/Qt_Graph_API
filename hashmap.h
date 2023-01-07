@@ -82,6 +82,7 @@ V HashMap<K,V>::Remove(  K& key){
 
 template<class K,class V>
 V  HashMap<K,V>::Remove(  K& key,  V val){
+    if(map->getCapacity()==0) return  V();
     int bucket;
     pair<K,V> p=map->findPos(key,bucket)->data;
     if(p.second==val){
@@ -89,7 +90,6 @@ V  HashMap<K,V>::Remove(  K& key,  V val){
         hashset.erase(key);
         return val;
     }
-
     return V();
 }
 

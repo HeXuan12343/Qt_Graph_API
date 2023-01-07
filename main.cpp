@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     Widget w;
     w.show();
 
-//    DbLinkedList<int , int> l;
+//    DbLinkedList<std::string , int> l;
 //    for(int i = 0; i < 20; i++){
 //        l.Append(i);
 //    }
