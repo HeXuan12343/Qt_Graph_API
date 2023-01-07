@@ -17,9 +17,9 @@ HEADERS += \
     dblinkedlist.h \
     expandablearraylist.h \
     expandablelinkedhashtable.h \
-    graphlink.h \
     hashmap.h \
-    widget.h
+    widget.h \
+    wusgraph.h
 
 FORMS += \
     widget.ui
