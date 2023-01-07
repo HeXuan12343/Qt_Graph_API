@@ -25,6 +25,7 @@ class DbLinkedList
 public:
     DbLinkedList();
     DblNode<K , E> * Search(K key);
+    DblNode<K , E> * Search(E val);
     DblNode<K,E> *getFirst(){return first;}
     bool Insert(K val ,int i, int d = 1);
     void Append(K key , E val);
@@ -33,6 +34,7 @@ public:
     bool Remove(int i , E &val, int d = 1);
     bool Remove(K key , E &val);
     bool Remove(K key);
+    bool Remove(E val);
     void Clear();
     size_t Size();
 
@@ -65,6 +67,18 @@ DblNode<K , E> *DbLinkedList<K , E>::Search(K key)//根据关键码查找
     if(p == first)
         return NULL;
     while (p->key != key && p != first) {
+        p = p->rLink;
+    }
+    return p;
+}
+
+template<typename K, typename E>
+DblNode<K, E> *DbLinkedList<K, E>::Search(E val)
+{
+    DblNode<K , E> *p = first->rLink;
+    if(p == first)
+        return NULL;
+    while (p->data != val && p != first) {
         p = p->rLink;
     }
     return p;
@@ -194,6 +208,22 @@ template<typename K, typename E>
 bool DbLinkedList<K, E>::Remove(K key){
     DblNode<K , E>* del = first->rLink;
     while (del != first && del->key != key) {
+        del = del->rLink;
+    }
+    if(del == first) return false; //未找到指定结点
+    else{
+        del->rLink->lLink = del->lLink;
+        del->lLink->rLink = del->rLink;
+        delete del;
+        return true;
+    }
+}
+
+template<typename K, typename E>
+bool DbLinkedList<K, E>::Remove(E val)
+{
+    DblNode<K , E>* del = first->rLink;
+    while (del != first && del->data != val) {
         del = del->rLink;
     }
     if(del == first) return false; //未找到指定结点

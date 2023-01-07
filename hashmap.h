@@ -89,6 +89,7 @@ V  HashMap<K,V>::Remove(  K& key,  V val){
         hashset.erase(key);
         return val;
     }
+
     return V();
 }
 

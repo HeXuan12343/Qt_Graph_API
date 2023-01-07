@@ -44,24 +44,22 @@ int main(int argc, char *argv[])
 //    for(int i = 0; i < 10; i++){
 //        qDebug()<<array[i];
 //    }
-    HashMap<std::string , int> m;
-    std::pair<std::string , int> ptest;
-    std::pair<std::string , int> ptest2;
-    ptest.first = "北京";
-    ptest.second = 5;
-    ptest2.first = "北方";
-    ptest2.second = 2;
-    m.Insert(ptest);
-    m.Insert(ptest2);
-    std::string test = "北京";
-    std::string test2 = "北方";
-    std::string test3="南京";
-    m.Clear();
-    qDebug()<<m.getValue(test);
-    qDebug()<<m.getValue(test2);
-    m.Remove(test2,0);
-    qDebug()<<m.getValue(test2);
-//    m.resizeTable();
+//    HashMap<std::string , int> m;
+//    std::pair<std::string , int> ptest;
+//    std::pair<std::string , int> ptest2;
+//    ptest.first = "北京";
+//    ptest.second = 5;
+//    ptest2.first = "北方";
+//    ptest2.second = 2;
+//    m.Insert(ptest);
+//    m.Insert(ptest2);
+//    std::string test = "北京";
+//    std::string test2 = "北方";
+//    std::string test3="南京";
+//    m.Clear();
+//    qDebug()<<m.getValue(test);
+//    qDebug()<<m.getValue(test2);
+
     return a.exec();
 }
 
