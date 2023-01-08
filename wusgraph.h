@@ -220,7 +220,7 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         DblNode<int , Vertex<int , W>> *v1Node = verList.Search(v1);
         DblNode<int , Vertex<int , W>> *v2Node = verList.Search(v2);//在顶点双链表中查找
         Vertex<int , W> v_1 = v1Node->data;
-        Vertex<int , W> v_2 = v1Node->data;//获取顶点对象
+        Vertex<int , W> v_2 = v2Node->data;//获取顶点对象
         auto v1EdgeList = v_1.EdgeList;
         auto v2EdgeList = v_2.EdgeList;//获取顶点的边链表
         std::pair<V , std::pair<int , int>> ePair(ver1+ver2 , std::pair<int , int>(v1 , v2));//建立边散列映射
@@ -233,6 +233,8 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         edg2.frien_p = edg1Node;//连接伙伴指针
         edg1Node->data = edg1;
         edg2Node->data = edg2;//更新边结点
+        auto v1First = v1EdgeList.getFirst();
+        auto v2First = v2EdgeList.getFirst();
         v1EdgeList.Append(v2 , edg1Node);
         v2EdgeList.Append(v1 , edg2Node);//将边添加到顶点边链表,邻接顶点整数值成为关键码
         edgeNum++;
