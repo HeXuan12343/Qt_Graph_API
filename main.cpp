@@ -97,6 +97,23 @@ int main(int argc, char *argv[])
     qDebug()<<"getWeight测试,"<<"cost for <北京,日本>"<<'\t'<<"150";
     auto cost = g.getWeight(test1 , test5);
     qDebug()<<cost;
+    qDebug()<<"getNeibors测试,Neibors of 北京"<<'\t'<<"2\t5";
+    Neighbors<int , int> neibor = g.getNeighbors(test1);
+    auto neiborList = neibor.neiborList;
+    auto costList = neibor.costList;
+    auto neiborFirst = neiborList.getFirst();
+    auto costFirst = costList.getFirst();
+    auto np = neiborFirst->rLink;
+    auto cp = costFirst->rLink;
+    while (np != neiborFirst) {
+        qDebug()<<np->data.data;
+        np = np->rLink;
+    }
+    qDebug()<<"权值为：";
+    while (cp != costFirst) {
+        qDebug()<<cp->data;
+        cp = cp->rLink;
+    }
     return a.exec();
 }
 

@@ -13,8 +13,6 @@ struct DblNode{
         : lLink(left) , rLink(right) , hLink(hlink){}
     DblNode<K , E>(E val, DblNode<K , E>* left = NULL , DblNode<K , E>* right = NULL , DblNode<K , E>* hlink = NULL)
         :data(val) , lLink(left) , rLink(right), hLink(hlink){}
-    DblNode<K , E>(K key, DblNode<K , E>* left = NULL , DblNode<K , E>* right = NULL , DblNode<K , E>* hlink = NULL)
-        :key(key) , lLink(left) , rLink(right), hLink(hlink){}
     DblNode<K , E>(K key, E val , DblNode<K , E>* left = NULL , DblNode<K , E>* right = NULL , DblNode<K , E>* hlink = NULL)
         :key(key) , data(val) ,lLink(left) , rLink(right), hLink(hlink){}
 };
@@ -28,7 +26,6 @@ public:
     DblNode<K,E> *getFirst(){return first;}
     bool Insert(K val ,int i, int d = 1);
     void Append(K key , E val);
-    void Append(K key);
     void Append(E val);
     void Append(K key , DblNode<K , E> *NewNode);
     bool Remove(int i , E &val, int d = 1);
@@ -117,27 +114,6 @@ void DbLinkedList<K, E>::Append(K key, E val)
 
 }
 
-template<typename K, typename E>
-void DbLinkedList<K, E>::Append(K key)
-{
-    DblNode<K , E> *s = new DblNode<K , E>(key);
-    DblNode<K , E> *p = first->rLink;
-    if(p == first){//表空
-        s->rLink = p->rLink;
-        p->rLink = s;
-        s->lLink = p;
-        s->rLink->lLink = s;
-    }
-    else {
-        while (p->rLink != first) {
-            p = p->rLink;
-        }
-        s->rLink = p->rLink;
-        p->rLink = s;
-        s->lLink = p;
-        s->rLink->lLink = s;
-    }
-}
 
 template<typename K, typename E>
 void DbLinkedList<K, E>::Append(E val)
@@ -168,10 +144,10 @@ void DbLinkedList<K, E>::Append(K key, DblNode<K, E> *NewNode)
     s->key = key;
     DblNode<K , E> *p = first->rLink;
     if(p == first){//表空
-        s->rLink = p->rLink;
+        s->rLink = p;
         p->rLink = s;
         s->lLink = p;
-        s->rLink->lLink = s;
+        p->lLink = s;
     }
     else {
         while (p->rLink != first) {

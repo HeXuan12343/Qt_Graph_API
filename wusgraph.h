@@ -53,8 +53,12 @@ struct Vertex{
 
 template<typename V , typename W>
 struct Neighbors{
-    DbLinkedList<V , Vertex<V , W>> neiborList;//存储邻接点
-    DbLinkedList<V , W> costList; //存储对应权值
+    DbLinkedList<int , Vertex<int , W>> neiborList;//存储邻接点
+    DbLinkedList<int , W> costList; //存储对应权值
+    Neighbors()
+    {
+
+    }
 };
 
 
@@ -70,7 +74,7 @@ public:
     void removeVertex(V ver);//删除顶点
     bool isVertex(V ver);//判断该顶点是否在图中
     int Degree(V ver);//顶点的度
-    Neighbors<V , W> getNeighbors(V ver);//返回顶点的所有邻接顶点
+    Neighbors<int, W> getNeighbors(V ver);//返回顶点的所有邻接顶点
     void addEdge(V ver1 , V ver2 ,const W cost);//添加边
     bool removeEdge(V ver1 , V ver2);//删除边
     bool isEdge(V ver1 , V ver2);//判断边是否在图中
@@ -182,11 +186,11 @@ int WUSGraph<V, W>::Degree(V ver)
 }
 
 template<typename V, typename W>
-Neighbors<V, W> WUSGraph<V, W>::getNeighbors(V ver)
+Neighbors<int, W> WUSGraph<V, W>::getNeighbors(V ver)
 {
-    Neighbors<V, W> neighbor;
+    Neighbors<int, W> neighbor;
     if(!isVertex(ver))
-        return NULL;
+        return Neighbors<int, W>();
     auto verData = verMap.getValue(ver);//通过映射获取对应整数值
     DblNode<int , Vertex<int , W>> *vNode = verList.Search(verData);//在顶点双链表中查找
     Vertex<int , W> v = vNode->data;//获取顶点对象
@@ -194,10 +198,11 @@ Neighbors<V, W> WUSGraph<V, W>::getNeighbors(V ver)
     auto first = vEdgeList.getFirst();//获取链表的头节点
     auto p = first->rLink;//滑动指针
     while (p != first) {
-        auto vtemp = p->vp;//获取顶点对象
-        auto ecost = p->_cost;//获取边权值
-        neighbor.neiborList.Append(vtemp);//插入邻接顶点表
+        auto vtemp = p->data.vp;//获取顶点对象
+        auto ecost = p->data._cost;//获取边权值
+        neighbor.neiborList.Append(verData , vtemp);//插入邻接顶点表
         neighbor.costList.Append(ecost);//插入权值
+        p = p->rLink;
     }
     return neighbor;
 
