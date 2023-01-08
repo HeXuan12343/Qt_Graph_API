@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     Widget w;
     w.show();
-
+/***** 双链表测试 *****/
 //    DbLinkedList<std::string , int> l;
 //    for(int i = 0; i < 20; i++){
 //        l.Append(i);
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 //    qDebug()<<m.getValue(test2);
 
 /*****  wushgraph测试 *****/
-    WUSGraph<std::string , int> g;
+    WUSGraph<std::string , int> g(5);
     std::string test1 = "北京";
     std::string test2 = "南京";
     std::string test3 = "河北";
@@ -74,16 +74,16 @@ int main(int argc, char *argv[])
     g.addVertex(test4);
     g.addVertex(test5);
     auto *vList = g.getVertices();
-    for(int i = 0; i < 5; i++)
+    for(int i = 0; i < 6; i++)
     {
-        qDebug()<<vList[i];
+        qDebug()<<QString::fromStdString(vList[i]);
     }
     g.removeVertex("北京");
     qDebug()<<"删除顶点测试,"<<"remove"<<'\t'<<"北京"<<'\t'<<"1";
     auto *vList2 = g.getVertices();
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 6; i++)
     {
-        qDebug()<<vList2[i];
+        qDebug()<<QString::fromStdString(vList2[i]);
     }
     g.addEdge(test1 , test2 , 50);
     g.addEdge(test1 , test5 , 150);

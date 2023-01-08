@@ -66,10 +66,10 @@ template<typename V , typename W>
 class WUSGraph
 {
 public:
-    WUSGraph();//构造函数
+    WUSGraph(int v);//构造函数
     int vertexCount();//返回图中顶点的个数
     int edgeCount();//返回图中边的个数
-    int *getVertices();//返回包含所有顶点的数组
+    V *getVertices();//返回包含所有顶点的数组
     void addVertex(V ver);//添加顶点
     void removeVertex(V ver);//删除顶点
     bool isVertex(V ver);//判断该顶点是否在图中
@@ -83,6 +83,7 @@ private:
     HashMap<V , int> verMap;//顶点散列映射
     HashMap<V , std::pair<int , int>> edgMap;//边散列映射
     DbLinkedList<int , Vertex<int , W>> verList;//顶点双链表,规定顶点的值为整数
+    V *vertexes;//外部顶点类型数组
     int vertexNum;//顶点数量
     int edgeNum;//边数量
     int insertOder;//插入的第几个顶点
@@ -91,8 +92,9 @@ private:
 };
 
 template<typename V, typename W>
-WUSGraph<V, W>::WUSGraph()//构造函数
+WUSGraph<V, W>::WUSGraph(int v)//构造函数,用v个顶点初始化一个空图
 {
+    vertexes = new V[v+1];//初始化外部数组
     insertOder = 1;//初始化顶点插入次序
     vertexNum = 0;//初始化顶点数
     edgeNum = 0;//初始化边数
@@ -111,18 +113,9 @@ int WUSGraph<V, W>::edgeCount()//返回边数
 }
 
 template<typename V, typename W>
-int *WUSGraph<V, W>::getVertices()//获取包含所有顶点的数组
+V *WUSGraph<V, W>::getVertices()//获取包含所有顶点的数组
 {
-    int *v = new int[vertexNum];
-    DblNode<int , Vertex<int , W>> *first = verList.getFirst();//获取
-    DblNode<int , Vertex<int , W>> *p = first->rLink;
-    for(int i = 0; i < vertexNum; i++){
-        if(p != first){
-            v[i] = p->data.data;
-            p = p->rLink;
-        }
-    }
-    return v;
+    return vertexes;
 }
 
 
@@ -135,6 +128,7 @@ void WUSGraph<V, W>::addVertex(V ver)//插入顶点
     verMap.Insert(pai);//将映射对存入map
     Vertex<int , W> v(insertOder);//新建结点
     verList.Append(insertOder , v);//将顶点存入顶点表,insertOder在这里成为关键码,verList存储的是顶点Vertex对象
+    vertexes[insertOder] = ver;//存入外部数组
     insertOder++;//更新顶点的整数值
     vertexNum++;//更新顶点数量
 }
@@ -164,6 +158,7 @@ void WUSGraph<V, W>::removeVertex(V ver)
         delete del;
         delete fri_p;
     }
+    vertexes[verData] = V();//将外部数据置空
     vertexNum--;
     delete vNode;
 }
