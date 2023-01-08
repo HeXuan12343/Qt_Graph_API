@@ -30,6 +30,7 @@ public:
     void Append(K key , E val);
     void Append(K key);
     void Append(E val);
+    void Append(K key , DblNode<K , E> *NewNode);
     bool Remove(int i , E &val, int d = 1);
     bool Remove(K key , E &val);
     bool Remove(K key);
@@ -142,6 +143,29 @@ template<typename K, typename E>
 void DbLinkedList<K, E>::Append(E val)
 {
     DblNode<K , E> *s = new DblNode<K , E>(val);
+    DblNode<K , E> *p = first->rLink;
+    if(p == first){//表空
+        s->rLink = p->rLink;
+        p->rLink = s;
+        s->lLink = p;
+        s->rLink->lLink = s;
+    }
+    else {
+        while (p->rLink != first) {
+            p = p->rLink;
+        }
+        s->rLink = p->rLink;
+        p->rLink = s;
+        s->lLink = p;
+        s->rLink->lLink = s;
+    }
+}
+
+template<typename K, typename E>
+void DbLinkedList<K, E>::Append(K key, DblNode<K, E> *NewNode)
+{
+    DblNode<K , E> *s = NewNode;
+    s->key = key;
     DblNode<K , E> *p = first->rLink;
     if(p == first){//表空
         s->rLink = p->rLink;

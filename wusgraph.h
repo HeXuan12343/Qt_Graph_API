@@ -22,7 +22,7 @@ struct Edge{
     W _cost; //权值
     Edge<V , W>(DblNode<V ,Vertex<V , W>> *vpoint = NULL , DblNode<W , Edge<V , W>> *frien_point = NULL)
         : vp(vpoint) , frien_p(frien_point){}
-    Edge<V , W>(W cost, DblNode<V ,Vertex<V , W>> vpoint = NULL , DblNode<W , Edge<V , W>> *frien_point = NULL)
+    Edge<V , W>(W cost, DblNode<V ,Vertex<V , W>> *vpoint = NULL , DblNode<W , Edge<V , W>> *frien_point = NULL)
         : _cost(cost) , vp(vpoint) , frien_p(frien_point){}
 };
 
@@ -274,7 +274,8 @@ bool WUSGraph<V, W>::removeEdge(V ver1, V ver2)
 template<typename V, typename W>
 bool WUSGraph<V, W>::isEdge(V ver1, V ver2)
 {
-    if(edgMap.getValue(ver1+ver2) == 0)
+    auto key = ver1 + ver2;
+    if(edgMap.getValue(key) == std::pair<int , int>())
         return false;
     else
         return true;;

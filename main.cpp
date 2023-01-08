@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     g.addEdge(test1 , test2 , 50);
     g.addEdge(test1 , test5 , 150);
     g.addEdge(test3 , test2 , 60);
-    bool isEd = g.isEdge(test1 , test2);
+    bool isEd = g.isEdge(test3 , test2);
     qDebug()<<isEd;
     return a.exec();
 }
