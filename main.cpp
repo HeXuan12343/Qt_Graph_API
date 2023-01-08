@@ -94,6 +94,9 @@ int main(int argc, char *argv[])
     g.removeEdge(test3 , test2);
     bool isEd2 = g.isEdge(test3 , test2);
     qDebug()<<isEd2;
+    qDebug()<<"getWeight测试,"<<"cost for <北京,日本>"<<'\t'<<"150";
+    auto cost = g.getWeight(test1 , test5);
+    qDebug()<<cost;
     return a.exec();
 }
 

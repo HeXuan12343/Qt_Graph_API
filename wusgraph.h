@@ -295,11 +295,11 @@ W WUSGraph<V, W>::getWeight(V ver1, V ver2)
         auto v1 = verMap.getValue(ver1);//获取顶点1的整数值
         auto v2 = verMap.getValue(ver2);//获取顶点2的整数值
         DblNode<int , Vertex<int , W>> *vNode = verList.Search(v1);//在双链表中查找
-        Vertex<int , W> objVer1;//获取顶点对象
-        DbLinkedList<int , Edge<V , W>> edg1_List = objVer1.EdgeList;//获取顶点边链表
-        DblNode<int , Edge<V , W>> *eNode = edg1_List.Search(v2);//查找对应边结点
-        Edge<V , W> *edge = eNode->data;//获取边对象
-        return edge->_cost;
+        Vertex<int , W> objVer1 = vNode->data;//获取顶点对象
+        DbLinkedList<int , Edge<int , W>> edg1_List = objVer1.EdgeList;//获取顶点边链表
+        DblNode<int , Edge<int , W>> *eNode = edg1_List.Search(v2);//查找对应边结点
+        Edge<int , W> edge = eNode->data;//获取边对象
+        return edge._cost;
     }
 }
 
