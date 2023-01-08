@@ -20,28 +20,28 @@ struct Edge{
     DblNode<V ,Vertex<V , W>> *vp; //指向另一个顶点的指针
     DblNode<V , Edge<V , W>> *frien_p;  //伙伴指针
     W _cost; //权值
-    Edge<V , W>(DblNode<V ,Vertex<V , W>> vpoint = 0 , DblNode<W , Edge<V , W>> *frien_point = NULL)
+    Edge<V , W>(DblNode<V ,Vertex<V , W>> *vpoint = NULL , DblNode<W , Edge<V , W>> *frien_point = NULL)
         : vp(vpoint) , frien_p(frien_point){}
-    Edge<V , W>(W cost, DblNode<V ,Vertex<V , W>> vpoint = 0 , DblNode<W , Edge<V , W>> *frien_point = NULL)
+    Edge<V , W>(W cost, DblNode<V ,Vertex<V , W>> vpoint = NULL , DblNode<W , Edge<V , W>> *frien_point = NULL)
         : _cost(cost) , vp(vpoint) , frien_p(frien_point){}
 };
 
 template<typename V , typename W>
 struct Vertex{
-    V data; //顶点数据
+    int data; //顶点数据
     int degree;//顶点的度
-    DbLinkedList<int , Edge<V , W>> EdgeList;//顶点的边链表
+    DbLinkedList<int , Edge<int , W>> EdgeList;//顶点的边链表
     Vertex<V , W>()
-        : data(NULL) , degree(0){}
-    Vertex<V , W>(V dat)
+        : data(0) , degree(0){}
+    Vertex<V , W>(int dat)
         : data(dat) , degree(0){}
-    Vertex<V , W> & operator =(const Vertex<V , W> &v)//重载赋值运算符
+    Vertex<int , W> & operator =(const Vertex<int , W> &v)//重载赋值运算符
     {
         this->data = v.data;
         this->degree = v.degree;
         return *this;
     }
-    bool operator == (const Vertex<V , W> v)
+    bool operator == (const Vertex<int , W> v)
     {
         if(this->data == v.data)
             return true;
@@ -65,19 +65,19 @@ public:
     WUSGraph();//构造函数
     int vertexCount();//返回图中顶点的个数
     int edgeCount();//返回图中边的个数
-    V *getVertices();//返回包含所有顶点的数组
+    int *getVertices();//返回包含所有顶点的数组
     void addVertex(V ver);//添加顶点
     void removeVertex(V ver);//删除顶点
     bool isVertex(V ver);//判断该顶点是否在图中
     int Degree(V ver);//顶点的度
     Neighbors<V , W> getNeighbors(V ver);//返回顶点的所有邻接顶点
-    void addEdge(V ver1 , V ver2 , W cost);//添加边
+    void addEdge(V ver1 , V ver2 ,const W cost);//添加边
     bool removeEdge(V ver1 , V ver2);//删除边
     bool isEdge(V ver1 , V ver2);//判断边是否在图中
     W getWeight(V ver1 , V ver2);//求某边的权值
 private:
     HashMap<V , int> verMap;//顶点散列映射
-    HashMap<V , int> edgMap;//边散列映射
+    HashMap<V , std::pair<int , int>> edgMap;//边散列映射
     DbLinkedList<int , Vertex<int , W>> verList;//顶点双链表,规定顶点的值为整数
     int vertexNum;//顶点数量
     int edgeNum;//边数量
@@ -87,9 +87,11 @@ private:
 };
 
 template<typename V, typename W>
-WUSGraph<V, W>::WUSGraph()//构造函数，初始化顶点插入次序
+WUSGraph<V, W>::WUSGraph()//构造函数
 {
-    insertOder = 1;
+    insertOder = 1;//初始化顶点插入次序
+    vertexNum = 0;//初始化顶点数
+    edgeNum = 0;//初始化边数
 }
 
 template<typename V, typename W>
@@ -105,14 +107,15 @@ int WUSGraph<V, W>::edgeCount()//返回边数
 }
 
 template<typename V, typename W>
-V *WUSGraph<V, W>::getVertices()//获取包含所有顶点的数组
+int *WUSGraph<V, W>::getVertices()//获取包含所有顶点的数组
 {
-    V *v = new int[vertexNum];
-    DblNode<V , Vertex<V , W>> *first = verList.getFirst();
-    DblNode<V , Vertex<V , W>> *p = first->rLinV;
+    int *v = new int[vertexNum];
+    DblNode<int , Vertex<int , W>> *first = verList.getFirst();//获取
+    DblNode<int , Vertex<int , W>> *p = first->rLink;
     for(int i = 0; i < vertexNum; i++){
         if(p != first){
-            v[i] = p->data;
+            v[i] = p->data.data;
+            p = p->rLink;
         }
     }
     return v;
@@ -138,7 +141,26 @@ void WUSGraph<V, W>::removeVertex(V ver)
     auto verData = verMap.getValue(ver);//通过映射获取对应整数值
     DblNode<int , Vertex<int , W>> *vNode = verList.Search(verData);
     vNode->lLink->rLink = vNode->rLink;
-    vNode->rLink->lLink = vNode->lLink;
+    vNode->rLink->lLink = vNode->lLink;//从链表中摘下
+    Vertex<int , W> v = vNode->data;//获取顶点对象
+    DbLinkedList<int , Edge<V , W>> edgList = v.EdgeList;//获取顶点边链表
+    auto *first = edgList.getFirst();//获取头节点
+    auto *p = first->rLink; //滑动指针
+    while (p != first) {
+        auto del = p;//暂存要删除的顶点
+        auto *edg = p->data;//获取边对象
+        auto *vNeiborNode = edg->vp;//获取邻接顶点
+        auto fri_p = edg->frien_p;//获取伙伴指针
+        p = p->rLink;//指针右移
+        del->lLink->rLink = del->rLink;
+        del->rLink->lLInk = del->lLink;//将结点摘下
+        fri_p->lLink->rLink = fri_p->rLink;
+        fri_p->rLink->lLInk = fri_p->lLink;//将伙伴结点摘下
+        vNeiborNode->data.degree--;//更新邻接顶点的度
+        delete del;
+        delete fri_p;
+    }
+    vertexNum--;
     delete vNode;
 }
 
@@ -182,7 +204,7 @@ Neighbors<V, W> WUSGraph<V, W>::getNeighbors(V ver)
 }
 
 template<typename V, typename W>
-void WUSGraph<V, W>::addEdge(V ver1, V ver2, W cost)
+void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
 {
     if(isEdge(ver1 , ver2))//如果已经存在该边，返回
         return;
@@ -190,31 +212,35 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, W cost)
     {
         auto v1 = verMap.getValue(ver1);
         auto v2 = verMap.getValue(ver2);//获取顶点整数值
-        DblNode<int , Vertex<int , W>> *v1Node = verList.Search(ver1);
-        DblNode<int , Vertex<int , W>> *v2Node = verList.Search(ver2);//在顶点双链表中查找
+        DblNode<int , Vertex<int , W>> *v1Node = verList.Search(v1);
+        DblNode<int , Vertex<int , W>> *v2Node = verList.Search(v2);//在顶点双链表中查找
         Vertex<int , W> v_1 = v1Node->data;
         Vertex<int , W> v_2 = v1Node->data;//获取顶点对象
         auto v1EdgeList = v_1.EdgeList;
         auto v2EdgeList = v_2.EdgeList;//获取顶点的边链表
         std::pair<V , std::pair<int , int>> ePair(ver1+ver2 , std::pair<int , int>(v1 , v2));//建立边散列映射
         edgMap.Insert(ePair);//放入边哈希映射
-        Edge<V , W> *edg1(cost , v_2);//新建ver1半边结点
-        Edge<V , W> *edg2(cost , v_1);//新建ver2半边结点
-        edg1->frien_p = edg2;
-        edg2->frien_p = edg1;//连接伙伴指针
-        v1EdgeList.Append(v2 , edg1);
-        v2EdgeList.Append(v1 ,edg2);//将边添加到顶点边链表,邻接顶点整数值成为关键码
-
+        Edge<int , W> edg1(cost , v2Node);//新建ver1半边对象
+        Edge<int , W> edg2(cost , v1Node);//新建ver2半边对象
+        DblNode<int , Edge<int , W>> *edg1Node = new DblNode<int , Edge<int , W>>(v2 , edg1);
+        DblNode<int , Edge<int , W>> *edg2Node= new DblNode<int , Edge<int , W>>(v2 , edg2);//新建边结点
+        edg1.frien_p = edg2Node;
+        edg2.frien_p = edg1Node;//连接伙伴指针
+        v1EdgeList.Append(v2 , edg1Node);
+        v2EdgeList.Append(v1 , edg2Node);//将边添加到顶点边链表,邻接顶点整数值成为关键码
+        edgeNum++;
+        v_1.degree++;
+        v_2.degree++;//更新边数和顶点的度
     }
     else if(isVertex(ver1)&&!isVertex(ver2))//如果ver2不在图中,添加顶点
     {
         addVertex(ver2);
-        addEdge(ver1 , ver2);
+        addEdge(ver1 , ver2, cost);
     }
     else if(!isVertex(ver1)&&isVertex(ver2))//如果ver1不在图中，添加顶点
     {
         addVertex(ver1);
-        addEdge(ver1 , ver2);
+        addEdge(ver1 , ver2 , cost);
     }
 
 }
@@ -226,8 +252,10 @@ bool WUSGraph<V, W>::removeEdge(V ver1, V ver2)
         return false;
     auto v1 = verMap.getValue(ver1);//获取顶点1的整数值
     auto v2 = verMap.getValue(ver2);//获取顶点2的整数值
-    DblNode<int , Vertex<int , W>> *vNode = verList.Search(v1);//在双链表中查找
-    Vertex<int , W> objVer1;//获取顶点对象
+    DblNode<int , Vertex<int , W>> *vNode1 = verList.Search(v1);
+    DblNode<int , Vertex<int , W>> *vNode2 = verList.Search(v2);//在双链表中查找
+    Vertex<int , W> objVer1 = vNode1->data;
+    Vertex<int , W> objVer2 = vNode2->data;//获取顶点对象
     DbLinkedList<int , Edge<V , W>> edg1_List = objVer1.EdgeList;//获取顶点边链表
     DblNode<int , Edge<V , W>> *eNode = edg1_List.Search(v2);//查找对应边结点
     Edge<V , W> *edge = eNode->data;//获取边对象
@@ -238,6 +266,9 @@ bool WUSGraph<V, W>::removeEdge(V ver1, V ver2)
     fri_p->rLink->lLink = fri_p->lLink;//从链表中摘下
     delete eNode;
     delete fri_p;//删除结点
+    edgeNum--;
+    objVer1.degree--;
+    objVer2.degree--;//更新边数和顶点的度
 }
 
 template<typename V, typename W>

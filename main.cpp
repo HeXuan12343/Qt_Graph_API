@@ -15,7 +15,7 @@ using namespace std;
 #include <dblinkedlist.h>
 #include <expandablearraylist.h>
 #include "hashmap.h"
-
+#include "wusgraph.h"
 
 
 int main(int argc, char *argv[])
@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 //    for(int i = 0; i < 10; i++){
 //        qDebug()<<array[i];
 //    }
+/*****   HashMap测试  *****/
 //    HashMap<std::string , int> m;
 //    std::pair<std::string , int> ptest;
 //    std::pair<std::string , int> ptest2;
@@ -60,6 +61,28 @@ int main(int argc, char *argv[])
 //    qDebug()<<m.getValue(test);
 //    qDebug()<<m.getValue(test2);
 
+/*****  wushgraph测试 *****/
+    WUSGraph<std::string , int> g;
+    std::string test1 = "北京";
+    std::string test2 = "南京";
+    std::string test3 = "河北";
+    std::string test4 = "河南";
+    std::string test5 = "日本";
+    g.addVertex(test1);
+    g.addVertex(test2);
+    g.addVertex(test3);
+    g.addVertex(test4);
+    g.addVertex(test5);
+    auto *vList = g.getVertices();
+    for(int i = 0; i < 5; i++)
+    {
+        qDebug()<<vList[i];
+    }
+    g.addEdge(test1 , test2 , 50);
+    g.addEdge(test1 , test5 , 150);
+    g.addEdge(test3 , test2 , 60);
+    bool isEd = g.isEdge(test1 , test2);
+    qDebug()<<isEd;
     return a.exec();
 }
 
