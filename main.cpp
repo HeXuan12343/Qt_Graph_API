@@ -78,11 +78,22 @@ int main(int argc, char *argv[])
     {
         qDebug()<<vList[i];
     }
+    g.removeVertex("北京");
+    qDebug()<<"删除顶点测试,"<<"remove"<<'\t'<<"北京"<<'\t'<<"1";
+    auto *vList2 = g.getVertices();
+    for(int i = 0; i < 4; i++)
+    {
+        qDebug()<<vList2[i];
+    }
     g.addEdge(test1 , test2 , 50);
     g.addEdge(test1 , test5 , 150);
     g.addEdge(test3 , test2 , 60);
     bool isEd = g.isEdge(test3 , test2);
     qDebug()<<isEd;
+    qDebug()<<"删除边测试"<<"remove<河北,南京>"<<'\t'<<"<3,2>";
+    g.removeEdge(test3 , test2);
+    bool isEd2 = g.isEdge(test3 , test2);
+    qDebug()<<isEd2;
     return a.exec();
 }
 

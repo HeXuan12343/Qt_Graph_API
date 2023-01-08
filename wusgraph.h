@@ -143,19 +143,19 @@ void WUSGraph<V, W>::removeVertex(V ver)
     vNode->lLink->rLink = vNode->rLink;
     vNode->rLink->lLink = vNode->lLink;//从链表中摘下
     Vertex<int , W> v = vNode->data;//获取顶点对象
-    DbLinkedList<int , Edge<V , W>> edgList = v.EdgeList;//获取顶点边链表
+    DbLinkedList<int , Edge<int , W>> edgList = v.EdgeList;//获取顶点边链表
     auto *first = edgList.getFirst();//获取头节点
     auto *p = first->rLink; //滑动指针
     while (p != first) {
         auto del = p;//暂存要删除的顶点
-        auto *edg = p->data;//获取边对象
-        auto *vNeiborNode = edg->vp;//获取邻接顶点
-        auto fri_p = edg->frien_p;//获取伙伴指针
+        auto edg = p->data;//获取边对象
+        auto *vNeiborNode = edg.vp;//获取邻接顶点
+        auto fri_p = edg.frien_p;//获取伙伴指针
         p = p->rLink;//指针右移
         del->lLink->rLink = del->rLink;
-        del->rLink->lLInk = del->lLink;//将结点摘下
+        del->rLink->lLink = del->lLink;//将结点摘下
         fri_p->lLink->rLink = fri_p->rLink;
-        fri_p->rLink->lLInk = fri_p->lLink;//将伙伴结点摘下
+        fri_p->rLink->lLink = fri_p->lLink;//将伙伴结点摘下
         vNeiborNode->data.degree--;//更新邻接顶点的度
         delete del;
         delete fri_p;
@@ -226,6 +226,8 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         DblNode<int , Edge<int , W>> *edg2Node= new DblNode<int , Edge<int , W>>(v2 , edg2);//新建边结点
         edg1.frien_p = edg2Node;
         edg2.frien_p = edg1Node;//连接伙伴指针
+        edg1Node->data = edg1;
+        edg2Node->data = edg2;//更新边结点
         v1EdgeList.Append(v2 , edg1Node);
         v2EdgeList.Append(v1 , edg2Node);//将边添加到顶点边链表,邻接顶点整数值成为关键码
         edgeNum++;
@@ -256,14 +258,16 @@ bool WUSGraph<V, W>::removeEdge(V ver1, V ver2)
     DblNode<int , Vertex<int , W>> *vNode2 = verList.Search(v2);//在双链表中查找
     Vertex<int , W> objVer1 = vNode1->data;
     Vertex<int , W> objVer2 = vNode2->data;//获取顶点对象
-    DbLinkedList<int , Edge<V , W>> edg1_List = objVer1.EdgeList;//获取顶点边链表
-    DblNode<int , Edge<V , W>> *eNode = edg1_List.Search(v2);//查找对应边结点
-    Edge<V , W> *edge = eNode->data;//获取边对象
+    DbLinkedList<int , Edge<int , W>> edg1_List = objVer1.EdgeList;//获取顶点边链表
+    DblNode<int , Edge<int , W>> *eNode = edg1_List.Search(v2);//查找对应边结点
+    Edge<int , W> edge = eNode->data;//获取边对象
     eNode->lLink->rLink = eNode->rLink;
     eNode->rLink->lLink = eNode->lLink;//从链表中摘下
-    DblNode<int , Edge<V , W>> *fri_p = edge->frien_p;//获取伙伴指针结点
+    DblNode<int , Edge<int , W>> *fri_p = edge.frien_p;//获取伙伴指针结点
     fri_p->lLink->rLink = fri_p->rLink;
     fri_p->rLink->lLink = fri_p->lLink;//从链表中摘下
+    auto vKey = ver1 + ver2;
+    edgMap.Remove(vKey);//从映射表中删除
     delete eNode;
     delete fri_p;//删除结点
     edgeNum--;
