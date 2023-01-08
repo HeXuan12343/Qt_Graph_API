@@ -18,8 +18,13 @@ HEADERS += \
     expandablearraylist.h \
     expandablelinkedhashtable.h \
     hashmap.h \
+    minindexheap.h \
+    minspanforest.h \
+    minspantree.h \
     widget.h \
-    wusgraph.h
+    wqupcufset.h \
+    wusgraph.h \
+    wusgraphclient.h
 
 FORMS += \
     widget.ui
