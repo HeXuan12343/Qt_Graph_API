@@ -117,7 +117,13 @@ void WUSGraphClient<V,W>::BFS(WUSGraph<V,W>& g,void (*visit)(V)){
         }
 
     delete [] visited;
-    delete [] vertexList;
+        delete [] vertexList;
+}
+
+template<class V, class W>
+void WUSGraphClient<V,W>::Kruskal(const WUSGraph<V, W> &g, MinSpanForest<V, W> &msf)
+{
+
 }
 
 #endif // WUSGRAPHCLIENT_H
