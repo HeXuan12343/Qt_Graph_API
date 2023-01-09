@@ -18,9 +18,11 @@ HEADERS += \
     expandablearraylist.h \
     expandablelinkedhashtable.h \
     hashmap.h \
+    minheap.h \
     minindexheap.h \
     minspanforest.h \
     minspantree.h \
+    myqueue.h \
     widget.h \
     wqupcufset.h \
     wusgraph.h \
