@@ -5,7 +5,7 @@
 
 template <class V , class W>
 struct MSTEdgeNode { //树边结点的类定义
-    V tail, head; //两顶点位置
+    int tail, head; //两顶点位置
     W key; //边上的权值(为结点关键码)
     MSTEdgeNode()
         : tail(-1), head(-1), key(0) {}
