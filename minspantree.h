@@ -22,24 +22,22 @@ struct MSTEdgeNode { //树边结点的类定义
 template <class V, class W>
 class MinSpanTree { //最小生成树的类定义
 protected:
-    MSTEdgeNode<V, W> *edgevalue; //边值数组
-    int maxSize, n; //最大元素个数和当前个数
+    int *edgevalue; //边值数组
 public:
     MinSpanTree (int sz = DefaltSize);
-    bool Insert (MSTEdgeNode<V , W>& item);
+    void Insert (const MSTEdgeNode<V , W>& item);
 };
 
 template<class V, class W>
 MinSpanTree<V, W>::MinSpanTree(int sz)
-    :maxSize (sz), n (0)
 {
-    edgevalue = new MSTEdgeNode<V, W>[sz];
+    edgevalue = new int[sz];
 }
 
 template<class V, class W>
-bool MinSpanTree<V, W>::Insert(MSTEdgeNode<V, W> &item)
+void MinSpanTree<V, W>::Insert(const MSTEdgeNode<V, W> &item)
 {
-    edgevalue[n++] = item;
+    edgevalue[item.tail] = item.head;
 }
 
 #endif // MINSPANTREE_H
