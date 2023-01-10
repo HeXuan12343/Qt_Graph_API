@@ -13,13 +13,36 @@ struct MinSpanForestNode{
     {
 
     }
+    bool operator <= (MinSpanForestNode<V , W>& R)
+    {
+        return cost <= R.cost;
+    }
+    bool operator > (MinSpanForestNode<V , W>& R)
+    {
+        return cost < R.cost;
+    }
+    bool operator == (MinSpanForestNode<V , W>& R)
+    {
+        return ((tail==R.tail&&head==R.tail)||(tail==R.head&&head==R.tail))&&cost==R.cost;
+    }
+    MinSpanForestNode& operator = (MinSpanForestNode<V , W>& R)
+    {
+        if(*this!=R)
+        {
+            tail=R.tail;
+            head=R.head;
+            cost=R.cost;
+        }
+        return *this;
+    }
 };
 
 
 template<class V , class W>
 class MinSpanForest{
+public:
     MinSpanForest(int size = DefaltSize);
-    void Insert(const MinSpanForestNode<V , W> &item);
+    void Insert( MinSpanForestNode<V , W> &item);
 private:
     int *edgeList;
 };
@@ -31,7 +54,7 @@ MinSpanForest<V, W>::MinSpanForest(int size)
 }
 
 template<class V, class W>
-void MinSpanForest<V, W>::Insert(const MinSpanForestNode<V, W> &item)
+void MinSpanForest<V, W>::Insert( MinSpanForestNode<V, W> &item)
 {
     edgeList[item.tail] = item.head;
 }
