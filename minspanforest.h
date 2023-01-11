@@ -16,26 +16,26 @@ struct MinSpanForestNode{
 
     }
 
-    bool operator <= (const MinSpanForestNode<V , W>& R)
+    bool operator <= (const MinSpanForestNode<V , W>& R)const
     {
         return key <= R.key;
     }
-    bool operator > (const MinSpanForestNode<V , W>& R)
+    bool operator > (const MinSpanForestNode<V , W>& R)const
     {
         return key > R.key;
     }
-//    bool operator < (const MinSpanForestNode<V , W>& R)
-//    {
-//        return key < R.key;
-//    }
-//    bool operator >= (const MinSpanForestNode<V , W>& R)
-//    {
-//        return key >= R.key;
-//    }
-//    bool operator == (const MinSpanForestNode<V , W>& R)
-//    {
-//        return ((tail==R.tail&&head==R.tail)||(tail==R.head&&head==R.tail))&&key==R.key;
-//    }
+    bool operator < (const MinSpanForestNode<V , W>& R)const
+    {
+        return key < R.key;
+    }
+    bool operator >= (const MinSpanForestNode<V , W>& R)const
+    {
+        return key >= R.key;
+    }
+    bool operator == (const MinSpanForestNode<V , W>& R)const
+    {
+        return ((tail==R.tail&&head==R.tail)||(tail==R.head&&head==R.tail))&&key==R.key;
+    }
     MinSpanForestNode& operator = (MinSpanForestNode<V , W>& R)
     {
         tail=R.tail;
@@ -61,19 +61,22 @@ template<class V, class W>
 MinSpanForest<V, W>::MinSpanForest(int size)
 {
     edgeList = new int[size];
+    for(int i=0;i<size;i++){
+        edgeList[i]=-1;
+    }
     currentSize = size;
 }
 
 template<class V, class W>
 void MinSpanForest<V, W>::Insert( MinSpanForestNode<V, W> item)
 {
-    edgeList[item.tail] = item.head;
+    edgeList[item.head] = item.tail;
 }
 
 template<class V, class W>
 void MinSpanForest<V, W>::PrintTree()
 {
-    for(int i = 0; i < currentSize; i++){
+    for(int i = 1; i < currentSize; i++){
         qDebug()<<edgeList[i];
     }
 }

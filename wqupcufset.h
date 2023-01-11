@@ -43,9 +43,12 @@ void WQUPCUFset::Union(int Root1, int Root2)
 
 int WQUPCUFset::Find(int i){
     //使用折叠规则的搜索算法
-    int j;
-    for ( j = i; parent[j] >= 0; j = parent[j]);
-    //让 j 循双亲指针走到根
+    if(parent[i]<0)
+        return i;
+    int j=i;
+    while (parent[j]>0) {
+        j=parent[j];
+    }//让 j 循双亲指针走到根
     while (parent[i] != j) { //换 parent[i] 到 j
          int temp = parent[i];
          parent[i] = j;
