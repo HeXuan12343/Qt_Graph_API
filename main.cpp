@@ -154,14 +154,14 @@ int main(int argc, char *argv[])
     WUSGraphClient<string , int> gclint;
     int maxDegree = gclint.MaxDegree(g);
     qDebug()<<"获取最大顶点的度"<<maxDegree;
-    qDebug()<<"DFS test**************";
-    gclint.DFS(g , PrintCity);
     qDebug()<<"BFS test**************";
     gclint.BFS(g , PrintCity);
+    qDebug()<<"DFS test**************";
+    gclint.DFS(g , PrintCity);
     qDebug()<<"Kruskal test**************";
-    MinSpanForest<string , int> minForest(5);
-//    gclint.Kruskal(g , minForest);
-    minForest.PrintTree();
+    MinSpanForest<string , int> minForest(6);
+    gclint.Kruskal(g , minForest);
+//    minForest.PrintTree();
     return a.exec();
 }
 

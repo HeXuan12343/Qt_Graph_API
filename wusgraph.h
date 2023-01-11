@@ -225,13 +225,15 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         DblNode<int , Vertex<int , W>> *v1Node = verList.Search(v1);
         DblNode<int , Vertex<int , W>> *v2Node = verList.Search(v2);//在顶点双链表中查找
         v1Node->data.degree++;
-        v2Node->data.degree++;
+        v2Node->data.degree++;//更新顶点的度
         Vertex<int , W> v_1 = v1Node->data;
         Vertex<int , W> v_2 = v2Node->data;//获取顶点对象
         auto v1EdgeList = v_1.EdgeList;
         auto v2EdgeList = v_2.EdgeList;//获取顶点的边链表
-        std::pair<V , std::pair<int , int>> ePair(ver1+ver2 , std::pair<int , int>(v1 , v2));//建立边散列映射
-        edgMap.Insert(ePair);//放入边哈希映射
+        std::pair<V , std::pair<int , int>> ePair1(ver1+ver2 , std::pair<int , int>(v1 , v2));
+        std::pair<V , std::pair<int , int>> ePair2(ver1+ver2 , std::pair<int , int>(v2 , v1));//建立边散列映射
+        edgMap.Insert(ePair1);
+        edgMap.Insert(ePair2);//放入边哈希映射
         Edge<int , W> edg1(cost , v2Node);//新建ver1半边对象
         Edge<int , W> edg2(cost , v1Node);//新建ver2半边对象
         DblNode<int , Edge<int , W>> *edg1Node = new DblNode<int , Edge<int , W>>(v2 , edg1);
@@ -245,7 +247,6 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         v1EdgeList.Append(v2 , edg1Node);
         v2EdgeList.Append(v1 , edg2Node);//将边添加到顶点边链表,邻接顶点整数值成为关键码
         edgeNum++;
-        //更新边数和顶点的度
     }
     else if(isVertex(ver1)&&!isVertex(ver2))//如果ver2不在图中,添加顶点
     {

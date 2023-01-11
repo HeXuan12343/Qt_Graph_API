@@ -9,27 +9,31 @@ template<class V,class W>
 class RoutePlanningSystem : public WUSGraphClient<V , W>
 {
 public:
-    RoutePlanningSystem();//构造函数初始化交通系统
-    bool addCity(const V cityName);//添加城市
-    bool removeCity(const V cityName);//删除城市
-    bool resetCityInfo(const V cityName);//重设城市信息
-    bool addRoad(const V c1 , const V c2);//添加交通道路
-    bool removeRoad(const V c1 , const V c2);//删除道路
-    bool resetRoadInfo(const V c1 , const V c2);//重设道路信息
-    void ReadFileAndInit(QString FilePath);//读取文件构建交通系统
-    void ShowSysteamInfo();//展示交通系统信息 城市数、所有城市、相邻城市间的道路数、所有道路
-    double Sparseness();//计算图的稀疏程度
-    int ConnectedComponentCount();//计算连通分量数量
-    bool isHaveLoop();//判断连通分量里面是否有环
-    bool isInCity(V cityName);//判断该城市是否在交通库中
-    bool isInRoad(V c1 , V c2);//判断该道路是否在交通库中
-    int NeiborsCount(V cityName);//返回邻接顶点数量
-    W getRoadDistance(V c1 , V c2);//计算道路的距离
-    void getNeiborsCity(V cityName);//输出城市的所有相邻城市
-    V getRechableCity(V cityName);//输出从该城市出发可以到达的所有城市
-    int maxNeiborCityCount();//输出相邻城市数最多的城市数
-    void showMinDistance(V c1 , V c2);//输出两个城市之间的最短路径
-    void showInRangeCitys(V cityName , W distance);//输出规定距离内的所有城市
+    RoutePlanningSystem();//构造函数初始化交通系统3.1
+    bool addCity(const V cityName);//添加城市3.2
+    bool removeCity(const V cityName);//删除城市3.2
+    bool resetCityInfo(const V cityName);//重设城市信息3.2
+    bool addRoad(const V c1 , const V c2);//添加交通道路3.2
+    bool removeRoad(const V c1 , const V c2);//删除道路3.2
+    bool resetRoadInfo(const V c1 , const V c2);//重设道路信息3.2
+    void ReadFileAndInit(QString FilePath);//读取文件构建交通系统3.3
+    void ShowSysteamInfo();//展示交通系统信息 城市数、所有城市、相邻城市间的道路数、所有道路3.4
+    double Sparseness();//计算图的稀疏程度3.5
+    int ConnectedComponentCount();//计算连通分量数量3.6
+    bool isHaveLoop();//判断连通分量里面是否有环3.7
+    bool isInCity(V cityName);//判断该城市是否在交通库中3.8
+    bool isInRoad(V c1 , V c2);//判断该道路是否在交通库中3.8
+    int NeiborsCount(V cityName);//返回邻接顶点数量3.8
+    W getRoadDistance(V c1 , V c2);//计算道路的距离3.8
+    void getNeiborsCity(V cityName);//输出城市的所有相邻城市3.9
+    void getRechableCity(V cityName);//输出从该城市出发可以到达的所有城市3.10
+    int maxNeiborCityCount();//输出相邻城市数最多的城市数3.11
+    void showMinDistance(V c1 , V c2);//输出两个城市之间的最短路径3.12
+private:
+    void PrintCity(V v)//访问函数
+    {
+        qDebug()<<QString::fromStdString(v);
+    }
 };
 
 template<class V, class W>
@@ -71,10 +75,10 @@ void RoutePlanningSystem<V, W>::ReadFileAndInit(QString FilePath)
 template<class V, class W>
 void RoutePlanningSystem<V, W>::ShowSysteamInfo()
 {
-    cout<<"City count is\t"<<this->vertexCount();//输出城市数
+    qDebug()<<"City count is\t"<<this->vertexCount();//输出城市数
     auto cityArray = this->getVertices();
     for(auto city : cityArray){//输出所有城市
-        cout<<city;
+        qDebug()<<city;
     }
 }
 
@@ -123,14 +127,16 @@ void RoutePlanningSystem<V, W>::getNeiborsCity(V cityName)
     DblNode<int , W> *first = neibor.neiborList.getFirest();
     DblNode<int , W> *p = first->rLink;
     while (p != first) {
-        cout<<verList[p->data]<<",";
+        qDebug()<<verList[p->data]<<",";
     }
 }
 
 template<class V, class W>
-void RoutePlanningSystem<V, W>::showInRangeCitys(V cityName, W distance)
+void RoutePlanningSystem<V, W>::getRechableCity(V cityName)
 {
 
 }
+
+
 
 #endif // ROUTEPLANNINGSYSTEM_H
