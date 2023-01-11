@@ -19,6 +19,7 @@ using namespace std;
 #include "wusgraphclient.h"
 #include "minspanforest.h"
 #include "minspantree.h"
+#include "routeplanningsystem.h"
 
 void PrintCity(string v)
 {
@@ -123,26 +124,26 @@ int main(int argc, char *argv[])
 //        cp = cp->rLink;
 //    }
 /*****wusgraphclient测试*****/
-    WUSGraph<std::string , int> g(5);
-    std::string test1 = "北京";
-    std::string test2 = "南京";
-    std::string test3 = "河北";
-    std::string test4 = "河南";
-    std::string test5 = "日本";
-    g.addVertex(test1);
-    g.addVertex(test2);
-    g.addVertex(test3);
-    g.addVertex(test4);
-    g.addVertex(test5);
-    g.addEdge(test1 , test2 , 50);
-    g.addEdge(test3 , test2 , 60);
-    g.addEdge(test2 , test5 , 180);
-    g.addEdge(test3 , test4 , 40);
-    g.addEdge(test1 , test5 , 900);
-    auto vList = g.getVertices();
-    for(int i = 0; i < 6; i++){
-        qDebug()<<QString::fromStdString(vList[i]);
-    }
+//    WUSGraph<std::string , int> g(5);
+//    std::string test1 = "北京";
+//    std::string test2 = "南京";
+//    std::string test3 = "河北";
+//    std::string test4 = "河南";
+//    std::string test5 = "日本";
+//    g.addVertex(test1);
+//    g.addVertex(test2);
+//    g.addVertex(test3);
+//    g.addVertex(test4);
+//    g.addVertex(test5);
+//    g.addEdge(test1 , test2 , 50);
+//    g.addEdge(test3 , test2 , 60);
+//    g.addEdge(test2 , test5 , 180);
+//    g.addEdge(test3 , test4 , 40);
+//    g.addEdge(test1 , test5 , 900);
+//    auto vList = g.getVertices();
+//    for(int i = 0; i < 6; i++){
+//        qDebug()<<QString::fromStdString(vList[i]);
+//    }
 //    auto neibor = g.getNeighbors(test4);
 //    auto *first = neibor.neiborList.getFirst();
 //    auto *p = first->rLink;
@@ -151,17 +152,35 @@ int main(int argc, char *argv[])
 //        qDebug()<<"河南邻接顶点为"<<QString::fromStdString(vList[index]);
 //        p = p->rLink;
 //    }
-    WUSGraphClient<string , int> gclint;
-    int maxDegree = gclint.MaxDegree(g);
-    qDebug()<<"获取最大顶点的度"<<maxDegree;
-    qDebug()<<"BFS test**************";
-    gclint.BFS(g , PrintCity);
-    qDebug()<<"DFS test**************";
-    gclint.DFS(g , PrintCity);
-    qDebug()<<"Kruskal test**************";
-    MinSpanForest<string , int> minForest(6);
-    gclint.Kruskal(g , minForest);
+//    WUSGraphClient<string , int> gclint;
+//    int maxDegree = gclint.MaxDegree(g);
+//    qDebug()<<"获取最大顶点的度"<<maxDegree;
+//    qDebug()<<"BFS test**************";
+//    gclint.BFS(g , PrintCity);
+//    qDebug()<<"DFS test**************";
+//    gclint.DFS(g , PrintCity);
+//    qDebug()<<"Kruskal test**************";
+//    MinSpanForest<string , int> minForest(6);
+//    gclint.Kruskal(g , minForest);
 //    minForest.PrintTree();
+/*****RoutePlanningSystem测试*****/
+    RoutePlanningSystem<string , int> roadsysteam(5);
+    std::string test1 = "北京";
+    std::string test2 = "南京";
+    std::string test3 = "河北";
+    std::string test4 = "河南";
+    std::string test5 = "日本";
+    roadsysteam.addCity(test1);
+    roadsysteam.addCity(test2);
+    roadsysteam.addCity(test3);
+    roadsysteam.addCity(test4);
+    roadsysteam.addCity(test5);
+    roadsysteam.addRoad(test1 , test2 , 50);
+    roadsysteam.addRoad(test3 , test2 , 60);
+    roadsysteam.addRoad(test2 , test5 , 180);
+    roadsysteam.addRoad(test3 , test4 , 40);
+    roadsysteam.addRoad(test1 , test5 , 900);
+    roadsysteam.maxNeiborCityCount();
     return a.exec();
 }
 

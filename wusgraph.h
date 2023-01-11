@@ -231,7 +231,7 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         auto v1EdgeList = v_1.EdgeList;
         auto v2EdgeList = v_2.EdgeList;//获取顶点的边链表
         std::pair<V , std::pair<int , int>> ePair1(ver1+ver2 , std::pair<int , int>(v1 , v2));
-        std::pair<V , std::pair<int , int>> ePair2(ver1+ver2 , std::pair<int , int>(v2 , v1));//建立边散列映射
+        std::pair<V , std::pair<int , int>> ePair2(ver2+ver1 , std::pair<int , int>(v2 , v1));//建立边散列映射
         edgMap.Insert(ePair1);
         edgMap.Insert(ePair2);//放入边哈希映射
         Edge<int , W> edg1(cost , v2Node);//新建ver1半边对象

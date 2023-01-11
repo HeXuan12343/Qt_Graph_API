@@ -9,11 +9,11 @@ template<class V,class W>
 class RoutePlanningSystem : public WUSGraphClient<V , W>
 {
 public:
-    RoutePlanningSystem();//构造函数初始化交通系统3.1
+    RoutePlanningSystem(int v);//构造函数初始化交通系统3.1
     bool addCity(const V cityName);//添加城市3.2
     bool removeCity(const V cityName);//删除城市3.2
     bool resetCityInfo(const V cityName);//重设城市信息3.2
-    bool addRoad(const V c1 , const V c2);//添加交通道路3.2
+    bool addRoad(const V c1 , const V c2 , W cost);//添加交通道路3.2
     bool removeRoad(const V c1 , const V c2);//删除道路3.2
     bool resetRoadInfo(const V c1 , const V c2);//重设道路信息3.2
     void ReadFileAndInit(QString FilePath);//读取文件构建交通系统3.3
@@ -30,6 +30,7 @@ public:
     int maxNeiborCityCount();//输出相邻城市数最多的城市数3.11
     void showMinDistance(V c1 , V c2);//输出两个城市之间的最短路径3.12
 private:
+    WUSGraph<V , W> *priGraph;
     void PrintCity(V v)//访问函数
     {
         qDebug()<<QString::fromStdString(v);
@@ -37,33 +38,33 @@ private:
 };
 
 template<class V, class W>
-RoutePlanningSystem<V, W>::RoutePlanningSystem()
+RoutePlanningSystem<V, W>::RoutePlanningSystem(int v)
 {
-
+    priGraph = new WUSGraph<V , W>(v);
 }
 
 template<class V, class W>
 bool RoutePlanningSystem<V, W>::addCity(const V cityName)
 {
-    this->addVertex(cityName);
+    priGraph->addVertex(cityName);
 }
 
 template<class V, class W>
 bool RoutePlanningSystem<V, W>::removeCity(const V cityName)
 {
-    this->removeVertex(cityName);
+    priGraph->removeVertex(cityName);
 }
 
 template<class V, class W>
-bool RoutePlanningSystem<V, W>::addRoad(const V c1, const V c2)
+bool RoutePlanningSystem<V, W>::addRoad(const V c1, const V c2, W cost)
 {
-    this->addEdge(c1 , c2);
+    priGraph->addEdge(c1 , c2 , cost);
 }
 
 template<class V, class W>
 bool RoutePlanningSystem<V, W>::removeRoad(const V c1, const V c2)
 {
-    this->removeEdge(c1 , c2);
+    priGraph->removeEdge(c1 , c2);
 }
 
 template<class V, class W>
@@ -75,8 +76,8 @@ void RoutePlanningSystem<V, W>::ReadFileAndInit(QString FilePath)
 template<class V, class W>
 void RoutePlanningSystem<V, W>::ShowSysteamInfo()
 {
-    qDebug()<<"City count is\t"<<this->vertexCount();//输出城市数
-    auto cityArray = this->getVertices();
+    qDebug()<<"City count is\t"<<priGraph->vertexCount();//输出城市数
+    auto cityArray = priGraph->getVertices();
     for(auto city : cityArray){//输出所有城市
         qDebug()<<city;
     }
@@ -85,11 +86,11 @@ void RoutePlanningSystem<V, W>::ShowSysteamInfo()
 template<class V, class W>
 double RoutePlanningSystem<V, W>::Sparseness()
 {
-    int CityCount = this->vertexCount();
-    auto cityArray = this->getVertices();
+    int CityCount = priGraph->vertexCount();
+    auto cityArray = priGraph->getVertices();
     double degreeSum;
     for(int i = 1; i < CityCount; i++){
-        degreeSum += this->Degree(cityArray[i]);
+        degreeSum += priGraph->Degree(cityArray[i]);
     }
     double degreeAverage = degreeSum / CityCount;
     return degreeAverage / (CityCount - 1);
@@ -98,32 +99,32 @@ double RoutePlanningSystem<V, W>::Sparseness()
 template<class V, class W>
 bool RoutePlanningSystem<V, W>::isInCity(V cityName)
 {
-    return this->isVertex(cityName);
+    return priGraph->isVertex(cityName);
 }
 
 template<class V, class W>
 bool RoutePlanningSystem<V, W>::isInRoad(V c1, V c2)
 {
-    return this->isEdge(c1 , c2);
+    return priGraph->isEdge(c1 , c2);
 }
 
 template<class V, class W>
 int RoutePlanningSystem<V, W>::NeiborsCount(V cityName)
 {
-    return this->Degree(cityName);
+    return priGraph->Degree(cityName);
 }
 
 template<class V, class W>
 W RoutePlanningSystem<V, W>::getRoadDistance(V c1, V c2)
 {
-    return this->getWeight(c1 , c2);
+    return priGraph->getWeight(c1 , c2);
 }
 
 template<class V, class W>
 void RoutePlanningSystem<V, W>::getNeiborsCity(V cityName)
 {
-    auto verList = this->getVertices();
-    Neighbors<V , W> neibor = this->getNeighbors(cityName);
+    auto verList = priGraph->getVertices();
+    Neighbors<V , W> neibor = priGraph->getNeighbors(cityName);
     DblNode<int , W> *first = neibor.neiborList.getFirest();
     DblNode<int , W> *p = first->rLink;
     while (p != first) {
@@ -134,7 +135,13 @@ void RoutePlanningSystem<V, W>::getNeiborsCity(V cityName)
 template<class V, class W>
 void RoutePlanningSystem<V, W>::getRechableCity(V cityName)
 {
+    this->DFS(priGraph , this->PrintCity);
+}
 
+template<class V, class W>
+int RoutePlanningSystem<V, W>::maxNeiborCityCount()
+{
+    this->MaxDegree(*priGraph);
 }
 
 
