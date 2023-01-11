@@ -23,6 +23,7 @@ HEADERS += \
     minspanforest.h \
     minspantree.h \
     myqueue.h \
+    routeplanningsystem.h \
     widget.h \
     wqupcufset.h \
     wusgraph.h \

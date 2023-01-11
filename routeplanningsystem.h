@@ -1,0 +1,136 @@
+#ifndef ROUTEPLANNINGSYSTEM_H
+#define ROUTEPLANNINGSYSTEM_H
+
+#include <QString>
+
+
+#include "wusgraphclient.h"
+template<class V,class W>
+class RoutePlanningSystem : public WUSGraphClient<V , W>
+{
+public:
+    RoutePlanningSystem();//构造函数初始化交通系统
+    bool addCity(const V cityName);//添加城市
+    bool removeCity(const V cityName);//删除城市
+    bool resetCityInfo(const V cityName);//重设城市信息
+    bool addRoad(const V c1 , const V c2);//添加交通道路
+    bool removeRoad(const V c1 , const V c2);//删除道路
+    bool resetRoadInfo(const V c1 , const V c2);//重设道路信息
+    void ReadFileAndInit(QString FilePath);//读取文件构建交通系统
+    void ShowSysteamInfo();//展示交通系统信息 城市数、所有城市、相邻城市间的道路数、所有道路
+    double Sparseness();//计算图的稀疏程度
+    int ConnectedComponentCount();//计算连通分量数量
+    bool isHaveLoop();//判断连通分量里面是否有环
+    bool isInCity(V cityName);//判断该城市是否在交通库中
+    bool isInRoad(V c1 , V c2);//判断该道路是否在交通库中
+    int NeiborsCount(V cityName);//返回邻接顶点数量
+    W getRoadDistance(V c1 , V c2);//计算道路的距离
+    void getNeiborsCity(V cityName);//输出城市的所有相邻城市
+    V getRechableCity(V cityName);//输出从该城市出发可以到达的所有城市
+    int maxNeiborCityCount();//输出相邻城市数最多的城市数
+    void showMinDistance(V c1 , V c2);//输出两个城市之间的最短路径
+    void showInRangeCitys(V cityName , W distance);//输出规定距离内的所有城市
+};
+
+template<class V, class W>
+RoutePlanningSystem<V, W>::RoutePlanningSystem()
+{
+
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::addCity(const V cityName)
+{
+    this->addVertex(cityName);
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::removeCity(const V cityName)
+{
+    this->removeVertex(cityName);
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::addRoad(const V c1, const V c2)
+{
+    this->addEdge(c1 , c2);
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::removeRoad(const V c1, const V c2)
+{
+    this->removeEdge(c1 , c2);
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::ReadFileAndInit(QString FilePath)
+{
+
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::ShowSysteamInfo()
+{
+    cout<<"City count is\t"<<this->vertexCount();//输出城市数
+    auto cityArray = this->getVertices();
+    for(auto city : cityArray){//输出所有城市
+        cout<<city;
+    }
+}
+
+template<class V, class W>
+double RoutePlanningSystem<V, W>::Sparseness()
+{
+    int CityCount = this->vertexCount();
+    auto cityArray = this->getVertices();
+    double degreeSum;
+    for(int i = 1; i < CityCount; i++){
+        degreeSum += this->Degree(cityArray[i]);
+    }
+    double degreeAverage = degreeSum / CityCount;
+    return degreeAverage / (CityCount - 1);
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::isInCity(V cityName)
+{
+    return this->isVertex(cityName);
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::isInRoad(V c1, V c2)
+{
+    return this->isEdge(c1 , c2);
+}
+
+template<class V, class W>
+int RoutePlanningSystem<V, W>::NeiborsCount(V cityName)
+{
+    return this->Degree(cityName);
+}
+
+template<class V, class W>
+W RoutePlanningSystem<V, W>::getRoadDistance(V c1, V c2)
+{
+    return this->getWeight(c1 , c2);
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::getNeiborsCity(V cityName)
+{
+    auto verList = this->getVertices();
+    Neighbors<V , W> neibor = this->getNeighbors(cityName);
+    DblNode<int , W> *first = neibor.neiborList.getFirest();
+    DblNode<int , W> *p = first->rLink;
+    while (p != first) {
+        cout<<verList[p->data]<<",";
+    }
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::showInRangeCitys(V cityName, W distance)
+{
+
+}
+
+#endif // ROUTEPLANNINGSYSTEM_H
