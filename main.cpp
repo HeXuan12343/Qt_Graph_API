@@ -168,7 +168,8 @@ int main(int argc, char *argv[])
     mst.PrintTree();
     qDebug()<<"Prim test**************";
     MinSpanForest<string , int> minForest_Prim(6);
-//    gclint.Prim(g,test1,minForest_Prim);
+    gclint.Prim(g,test1,minForest_Prim);
+    minForest_Prim.PrintTree();
     return a.exec();
 }
 

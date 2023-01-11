@@ -132,8 +132,7 @@ void WUSGraphClient<V,W>::BFS(WUSGraph<V,W>& g,void (*visit)(V)){
             }
 
         }
-
-    delete [] visited;
+//    delete [] visited;
 }
 
 template<class V, class W>
@@ -207,9 +206,8 @@ void WUSGraphClient<V,W>::Dijkstra( WUSGraph<V, W> &g, V &s, MinSpanTree<V, W> &
         MinNode<V,W> t;
         t.vertex=vertexlist[i+1];
         t.cost=dist[i+1];
-        node[0]=t;
+        node[i]=t;
     }
-    node[APImap.getValue(s)].cost=0;
     MinIndexHeap<MinNode<V,W>> heap(node,n);
     while (!heap.IsEmpty()) {
         heap.Remove(q);
@@ -245,6 +243,7 @@ void WUSGraphClient<V,W>::Dijkstra( WUSGraph<V, W> &g, V &s, MinSpanTree<V, W> &
             treenode.key=g.getWeight(vertexlist[i],vertexlist[path[i]]);
             mst.Insert(treenode);
         }
+//        qDebug()<<path[i];
     }
 }
 
@@ -273,6 +272,7 @@ void WUSGraphClient<V,W>::Prim( WUSGraph<V, W> &g,V &s, MinSpanForest<V, W> &msf
             if(!Vmst[index]){
                 ed.tail=APImap.getValue(s);
                 ed.head=index;
+                ed.key=g.getWeight(s,vertexlist[index]);
                 H.Insert(ed);
             }
             p=p->rLink;

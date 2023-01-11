@@ -6,6 +6,9 @@ class myQueue
 {
 public:
     myQueue(int size=16);
+    ~myQueue(){
+        delete [] element;
+    }
     bool EnQueue(T x);//进队列
     bool DeQueue(T &x);//出队列
     void MakeEmpty(){front=rear=0;}//队列置空
