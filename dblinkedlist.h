@@ -22,7 +22,7 @@ class DbLinkedList
 {
 public:
     DbLinkedList();
-    DblNode<K , E> * Search(K key);
+    DblNode<K , E> * Search(const K key);
     DblNode<K,E> *getFirst(){return first;}
     bool Insert(K val ,int i, int d = 1);
     void Append(K key , E val);
@@ -57,7 +57,7 @@ DbLinkedList<K , E>::DbLinkedList()
 }
 
 template<typename  K , typename E>
-DblNode<K , E> *DbLinkedList<K , E>::Search(K key)//根据关键码查找
+DblNode<K , E> *DbLinkedList<K , E>::Search(const K key)//根据关键码查找
 {
     DblNode<K , E> *p = first->rLink;
     if(p == first)

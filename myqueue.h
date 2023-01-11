@@ -20,7 +20,7 @@ private:
 template<class T>
 myQueue<T>::myQueue(int size)
 {
-    element=new int[size];
+    element=new T[size];
     front=rear=0;
     maxSize=size;
 }

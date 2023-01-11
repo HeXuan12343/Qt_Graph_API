@@ -67,6 +67,7 @@ class WUSGraph
 {
 public:
     WUSGraph(int v);//构造函数
+    WUSGraph();//空参构造函数
     int vertexCount();//返回图中顶点的个数
     int edgeCount();//返回图中边的个数
     V *getVertices();//返回包含所有顶点的数组
@@ -98,6 +99,12 @@ WUSGraph<V, W>::WUSGraph(int v)//构造函数,用v个顶点初始化一个空图
     insertOder = 1;//初始化顶点插入次序
     vertexNum = 0;//初始化顶点数
     edgeNum = 0;//初始化边数
+}
+
+template<typename V, typename W>
+WUSGraph<V, W>::WUSGraph()
+{
+
 }
 
 template<typename V, typename W>
@@ -194,8 +201,11 @@ Neighbors<int, W> WUSGraph<V, W>::getNeighbors(V ver)
     auto p = first->rLink;//滑动指针
     while (p != first) {
         auto vtemp = p->data.vp;//获取顶点对象
-        auto ecost = p->data._cost;//获取边权值
-        neighbor.neiborList.Append(verData , vtemp);//插入邻接顶点表
+        int vKey = vtemp->data.data;
+        Vertex<int , W>  NewV(vKey);
+        DblNode<int , Vertex<int , W>> *NewVnode = new DblNode<int , Vertex<int , W>>(vKey , NewV);
+        W ecost = p->data._cost;//获取边权值
+        neighbor.neiborList.Append(vKey , NewVnode);//插入邻接顶点表
         neighbor.costList.Append(ecost);//插入权值
         p = p->rLink;
     }
@@ -214,6 +224,8 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         auto v2 = verMap.getValue(ver2);//获取顶点整数值
         DblNode<int , Vertex<int , W>> *v1Node = verList.Search(v1);
         DblNode<int , Vertex<int , W>> *v2Node = verList.Search(v2);//在顶点双链表中查找
+        v1Node->data.degree++;
+        v2Node->data.degree++;
         Vertex<int , W> v_1 = v1Node->data;
         Vertex<int , W> v_2 = v2Node->data;//获取顶点对象
         auto v1EdgeList = v_1.EdgeList;
@@ -233,8 +245,7 @@ void WUSGraph<V, W>::addEdge(V ver1, V ver2, const W cost)
         v1EdgeList.Append(v2 , edg1Node);
         v2EdgeList.Append(v1 , edg2Node);//将边添加到顶点边链表,邻接顶点整数值成为关键码
         edgeNum++;
-        v_1.degree++;
-        v_2.degree++;//更新边数和顶点的度
+        //更新边数和顶点的度
     }
     else if(isVertex(ver1)&&!isVertex(ver2))//如果ver2不在图中,添加顶点
     {
@@ -258,6 +269,8 @@ bool WUSGraph<V, W>::removeEdge(V ver1, V ver2)
     auto v2 = verMap.getValue(ver2);//获取顶点2的整数值
     DblNode<int , Vertex<int , W>> *vNode1 = verList.Search(v1);
     DblNode<int , Vertex<int , W>> *vNode2 = verList.Search(v2);//在双链表中查找
+    vNode1->data.degree--;
+    vNode2->data.degree--;
     Vertex<int , W> objVer1 = vNode1->data;
     Vertex<int , W> objVer2 = vNode2->data;//获取顶点对象
     DbLinkedList<int , Edge<int , W>> edg1_List = objVer1.EdgeList;//获取顶点边链表
@@ -273,8 +286,7 @@ bool WUSGraph<V, W>::removeEdge(V ver1, V ver2)
     delete eNode;
     delete fri_p;//删除结点
     edgeNum--;
-    objVer1.degree--;
-    objVer2.degree--;//更新边数和顶点的度
+    //更新边数和顶点的度
 }
 
 template<typename V, typename W>
