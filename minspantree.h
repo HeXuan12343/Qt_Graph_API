@@ -2,6 +2,7 @@
 #define MINSPANTREE_H
 
 #define DefaltSize 100000
+#include<QDebug>
 
 template <class V , class W>
 struct MSTEdgeNode { //树边结点的类定义
@@ -23,21 +24,35 @@ template <class V, class W>
 class MinSpanTree { //最小生成树的类定义
 protected:
     int *edgevalue; //边值数组
+    int currentSize;
 public:
     MinSpanTree (int sz = DefaltSize);
     void Insert (const MSTEdgeNode<V , W>& item);
+    void PrintTree();
 };
 
 template<class V, class W>
 MinSpanTree<V, W>::MinSpanTree(int sz)
 {
     edgevalue = new int[sz];
+    for(int i=0;i<sz;i++){
+        edgevalue[i]=-1;
+    }
+    currentSize = sz;
 }
 
 template<class V, class W>
 void MinSpanTree<V, W>::Insert(const MSTEdgeNode<V, W> &item)
 {
     edgevalue[item.tail] = item.head;
+}
+
+template<class V, class W>
+void MinSpanTree<V,W>::PrintTree()
+{
+    for(int i = 1; i < currentSize; i++){
+        qDebug()<<edgevalue[i];
+    }
 }
 
 #endif // MINSPANTREE_H

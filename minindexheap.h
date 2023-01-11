@@ -19,11 +19,12 @@ struct MinNode{
     bool operator <= (MinNode & M){
         return  cost<= M.cost;
     }
+
     MinNode& operator =(MinNode& M){
-        if(*this!=M){
+
             vertex=M.vertex;
             cost=M.cost;
-        }
+
         return *this;
     }
 };
@@ -41,7 +42,7 @@ public:
         }
         bool Insert (T& d); //插入
         bool Remove (T& d); //删除
-        bool Modify(int i,const T x);//数组第i个修改为x
+        bool Modify(int i, T x);//数组第i个修改为x
         bool IsEmpty ()  { return currentSize == 0; } //判堆空否
         bool IsFull ()  { return currentSize == maxHeapSize; } //判堆满否
         void MakeEmpty () { currentSize = 0; } //置空堆
@@ -134,7 +135,7 @@ bool MinIndexHeap<T>::Remove (T& x) {
 }
 
 template<class T>
-bool MinIndexHeap<T>::Modify(int i, const T x)
+bool MinIndexHeap<T>::Modify(int i,  T x)
 {
     i++;
     data[i]=x;

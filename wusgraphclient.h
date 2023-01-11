@@ -17,7 +17,7 @@ public:
     void CreatGraphFromFile(std::string filepath,WUSGraph<V,W>& h);//从给定文件路径filepath读取
     int MaxDegree(WUSGraph<V,W>& g);//求g的最大顶点度数
     void Print( WUSGraph<V,W>& g);//输出
-    void DFS(WUSGraph<V,W>& g,void (*visit)(V));//深度优先遍历 访问函数是（*visit）（）
+    void DFS(WUSGraph<V,W>& g,V& s,void (*visit)(V));//深度优先遍历 访问函数是（*visit）（）
     void DFS(WUSGraph<V,W>& g,V v,bool visited[],V vertexlist[],void (*visit)(V));//DFS子过程
     void BFS(WUSGraph<V,W>& g,void (*visit)(V));//广度优先遍历 访问函数是（*visit）（）
     void Kruskal( WUSGraph<V,W>& g,MinSpanForest<V,W> &msf);//优化的Kruskal方法求解最小生成森林msf
@@ -62,21 +62,55 @@ int WUSGraphClient<V,W>::MaxDegree(WUSGraph<V, W> &g)
 
 template<class V,class W>
 void WUSGraphClient<V,W>::Print( WUSGraph<V,W>& g){
-    int n,m;
-    V* vertexList=g.getVertices();
+    MinSpanForestNode<V,W>ed;
+    int u,v;
+    int n=g.vertexCount();
+    int m=g.edgeCount();
+    MinHeap<MinSpanForestNode<V,W>>H(m);
+    WQUPCUFset F(n+1);
+    set<MinSpanForestNode<V,W>> Edge;
+    V* verlist=g.getVertices();
+    qDebug()<<"所有顶点为：";
+    for(int i = 1; i < n+1; i++){
+        qDebug()<<QString::fromStdString(verlist[i]);
+    }
+  //取边
+    for(int i=1;i<n+1;i++){
+        Neighbors<int,W> neighbor=g.getNeighbors(verlist[i]);//获取该顶点的邻接边
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
+        while(p!=first){//若邻接结点存在
+            Vertex<int , W> Vdata=p->data;
+            int index=Vdata.data;
+            u=APImap.getValue(verlist[i]);
+            v=APImap.getValue(verlist[index]);
+            ed.tail=u;
+            ed.head=v;
+            ed.key=g.getWeight(verlist[i],verlist[index]);
+//            H.Insert(ed);
+            Edge.insert(ed);
+            p = p->rLink;
+        }
+    }
+    qDebug()<<"所有边为：";
+    typename set<MinSpanForestNode<V,W>>::iterator it;
+    for(it=Edge.begin();it!=Edge.end();it++){
+        auto v1 = (*it).head;
+        auto v2 = (*it).tail;
+        qDebug()<<QString::fromStdString(verlist[v2])<<","<<QString::fromStdString(verlist[v1]);
+    }
 
 }
 
 template<class V,class W>
-void WUSGraphClient<V,W>::DFS(WUSGraph<V, W> &g, void (*visit)(V)){
+void WUSGraphClient<V,W>::DFS(WUSGraph<V, W> &g, V& v,void (*visit)(V)){
     int n=g.vertexCount();
     bool *visited=new bool[n+1];//辅助数组
     for(int i=0;i<n+1;i++)//初始化
         visited[i]=false;
     auto vertexList =g.getVertices();
-    auto s=vertexList[1];
 
-    DFS(g,s,visited,vertexList,visit);
+    DFS(g,v,visited,vertexList,visit);
     delete [] visited;
 
 }
@@ -146,8 +180,8 @@ void WUSGraphClient<V,W>::Kruskal( WUSGraph<V, W> &g, MinSpanForest<V, W> &msf)
     int n=g.vertexCount();
     int m=g.edgeCount();
     MinHeap<MinSpanForestNode<V,W>>H(m);
-    WQUPCUFset F(n);
-//    set<MinSpanForestNode<V,W> > Edge;
+    WQUPCUFset F(n+1);
+    set<MinSpanForestNode<V,W>> Edge;
     V* verlist=g.getVertices();
   //取边
     for(int i=1;i<n+1;i++){
@@ -162,16 +196,16 @@ void WUSGraphClient<V,W>::Kruskal( WUSGraph<V, W> &g, MinSpanForest<V, W> &msf)
             ed.tail=u;
             ed.head=v;
             ed.key=g.getWeight(verlist[i],verlist[index]);
-            H.Insert(ed);
-//            Edge.insert(ed);
+//            H.Insert(ed);
+            Edge.insert(ed);
             p = p->rLink;
         }
     }
-//    typename set<MinSpanForestNode<V,W>>::iterator it;
-//    for(it=Edge.begin();it!=Edge.end();it++){
-//        auto temp = *it;
-//        H.Insert(temp);
-//    }
+        typename set<MinSpanForestNode<V,W>>::iterator it;
+        for(it=Edge.begin();it!=Edge.end();it++){
+            auto temp = *it;
+            H.Insert(temp);
+        }
 
     count=1;
     while (count<n) {
@@ -219,9 +253,9 @@ void WUSGraphClient<V,W>::Dijkstra( WUSGraph<V, W> &g, V &s, MinSpanTree<V, W> &
         if(visited[APImap.getValue(v)])
             continue;
         visited[APImap.getValue(v)]=true;
-        Neighbors<int,W> neighbor=g.getVertices(v);//获取该顶点的邻接边
-        DblNode<int,W> *first=neighbor.neiborList.getFirst();//头结点
-        DblNode<int,W> *p=first->rLink;//获取第一个邻接顶点
+        Neighbors<int,W> neighbor=g.getNeighbors(v);//获取该顶点的邻接边
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
         while (p!=first) {
             Vertex<int , W> Vdata=p->data;
             int index=Vdata.data;
@@ -229,7 +263,10 @@ void WUSGraphClient<V,W>::Dijkstra( WUSGraph<V, W> &g, V &s, MinSpanTree<V, W> &
             if(!visited[index]&&dist[v_int]+w<dist[index]){
                 dist[index]=dist[v_int]+w;
                 path[index]=v_int;
-                heap.Modify(index,dist[index]);
+                MinNode<V,W> modify;
+                modify.vertex=vertexlist[index];
+                modify.cost=dist[index];
+                heap.Modify(index,modify);
             }
             p=p->rLink;
         }
@@ -262,15 +299,15 @@ void WUSGraphClient<V,W>::Prim( WUSGraph<V, W> &g,V &s, MinSpanForest<V, W> &msf
     Vmst[begin]=true;
     int count=1;
     do{
-        Neighbors<int,W> neighbor=g.getVertices(s);//获取该顶点的邻接边
-        DblNode<int,W> *first=neighbor.neiborList.getFirst();//头结点
-        DblNode<int,W> *p=first->rLink;//获取第一个邻接顶点
+        Neighbors<int,W> neighbor=g.getNeighbors(s);//获取该顶点的邻接边
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
         while (p!=first) {//遍历s的所有顶点
             Vertex<int , W> Vdata=p->data;
             int index=Vdata.data;
             if(!Vmst[index]){
-                ed.tail=s;
-                ed.head=vertexlist[index];
+                ed.tail=APImap.getValue(s);
+                ed.head=index;
                 H.Insert(ed);
             }
             p=p->rLink;
@@ -316,9 +353,9 @@ void WUSGraphClient<V,W>::LongestPath( WUSGraph<V, W> &g, V &s, MinSpanTree<V, W
                 max=dist[j];
             }
         visited[APImap.getValue(v)]=true;
-        Neighbors<int,W> neighbor=g.getVertices(v);//获取该顶点的邻接边
-        DblNode<int,W> *first=neighbor.neiborList.getFirst();//头结点
-        DblNode<int,W> *p=first->rLink;//获取第一个邻接顶点
+        Neighbors<int,W> neighbor=g.getNeighbors(v);//获取该顶点的邻接边
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
         while (p!=first) {
             Vertex<int , W> Vdata=p->data;
             int index=Vdata.data;
