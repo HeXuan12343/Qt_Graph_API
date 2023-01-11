@@ -68,6 +68,7 @@ class WUSGraph
 public:
     WUSGraph(int v);//构造函数
     WUSGraph();//空参构造函数
+    void InitGraph(int v);//初始化成员变量
     int vertexCount();//返回图中顶点的个数
     int edgeCount();//返回图中边的个数
     V *getVertices();//返回包含所有顶点的数组
@@ -80,6 +81,7 @@ public:
     bool removeEdge(V ver1 , V ver2);//删除边
     bool isEdge(V ver1 , V ver2);//判断边是否在图中
     W getWeight(V ver1 , V ver2);//求某边的权值
+
 private:
     HashMap<V , int> verMap;//顶点散列映射
     HashMap<V , std::pair<int , int>> edgMap;//边散列映射
@@ -105,6 +107,15 @@ template<typename V, typename W>
 WUSGraph<V, W>::WUSGraph()
 {
 
+}
+
+template<typename V, typename W>
+void WUSGraph<V, W>::InitGraph(int v)
+{
+    vertexes = new V[v+1];//初始化外部数组
+    insertOder = 1;//初始化顶点插入次序
+    vertexNum = 0;//初始化顶点数
+    edgeNum = 0;//初始化边数
 }
 
 template<typename V, typename W>

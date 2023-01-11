@@ -62,8 +62,43 @@ int WUSGraphClient<V,W>::MaxDegree(WUSGraph<V, W> &g)
 
 template<class V,class W>
 void WUSGraphClient<V,W>::Print( WUSGraph<V,W>& g){
-    int n,m;
-    V* vertexList=g.getVertices();
+    MinSpanForestNode<V,W>ed;
+    int u,v;
+    int n=g.vertexCount();
+    int m=g.edgeCount();
+    MinHeap<MinSpanForestNode<V,W>>H(m);
+    WQUPCUFset F(n+1);
+    set<MinSpanForestNode<V,W>> Edge;
+    V* verlist=g.getVertices();
+    qDebug()<<"所有顶点为：";
+    for(int i = 1; i < n+1; i++){
+        qDebug()<<QString::fromStdString(verlist[i]);
+    }
+  //取边
+    for(int i=1;i<n+1;i++){
+        Neighbors<int,W> neighbor=g.getNeighbors(verlist[i]);//获取该顶点的邻接边
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
+        while(p!=first){//若邻接结点存在
+            Vertex<int , W> Vdata=p->data;
+            int index=Vdata.data;
+            u=APImap.getValue(verlist[i]);
+            v=APImap.getValue(verlist[index]);
+            ed.tail=u;
+            ed.head=v;
+            ed.key=g.getWeight(verlist[i],verlist[index]);
+//            H.Insert(ed);
+            Edge.insert(ed);
+            p = p->rLink;
+        }
+    }
+    qDebug()<<"所有边为：";
+    typename set<MinSpanForestNode<V,W>>::iterator it;
+    for(it=Edge.begin();it!=Edge.end();it++){
+        auto v1 = (*it).head;
+        auto v2 = (*it).tail;
+        qDebug()<<QString::fromStdString(verlist[v2])<<","<<QString::fromStdString(verlist[v1]);
+    }
 
 }
 
