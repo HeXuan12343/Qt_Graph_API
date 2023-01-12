@@ -2,7 +2,7 @@
 #define ROUTEPLANNINGSYSTEM_H
 
 #include <QString>
-
+#include <QList>
 
 #include "wusgraphclient.h"
 
@@ -35,12 +35,47 @@ public:
     void showPrimForest(V cityName);//prim3.14
     void showKruskalForest(V cityName);//kruskal3.15
     void showMaxDistance(V cityName);//3.18
+    void showRangCity(V cityName , W R);//3.16
+
 private:
     WUSGraph<V , W> priGraph;
     WUSGraphClient<V , W> graphClient;
     void PrintCity(V v)
     {
         qDebug()<<QString::fromStdString(v);
+    }
+    void DFSforCompent(WUSGraph<V , W> &g,bool  *v , V verList[] , V ver)
+    {
+        v[ver]=true;//作访问标志
+        Neighbors<int, W> neighbor=g.getNeighbors(ver);//获取所有邻接顶点
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
+        while(p!=first){//当结点存在
+            Vertex<int , W> Vdata=p->data;
+            int index=Vdata.data;
+            if(!v[index])
+                DFSforCompent(g,v,verList,verList[index]);
+            p=p->rLink;
+        }
+    }
+
+    int DFSForLoop(WUSGraph<V , W> &g,bool  *v ,V* vArray,int n ,V verList[] , V ver)
+    {
+        v[ver]=true;//作访问标志
+        Neighbors<int, W> neighbor=g.getNeighbors(ver);//获取所有邻接顶点
+        auto *first=neighbor.neiborList.getFirst();//头结点
+        auto *p=first->rLink;//获取第一个邻接顶点
+        while(p!=first){//当结点存在
+            Vertex<int , W> Vdata=p->data;
+            int index=Vdata.data;
+            vArray[ver] = index;
+            if(vArray[index] == ver){
+                cout<<index<<"->"<<ver<<endl;
+            }
+            if(!v[index])
+                DFSForLoop(g,v,vArray ,n, verList,verList[index]);
+            p=p->rLink;
+        }
     }
 };
 
@@ -77,7 +112,9 @@ bool RoutePlanningSystem<V, W>::removeRoad(const V c1, const V c2)
 template<class V, class W>
 void RoutePlanningSystem<V, W>::ReadFileAndInit(QString FilePath)
 {
-
+    std::string filePath = FilePath.toStdString();
+    const char *p = filePath.c_str();
+    graphClient.CreatGraphFromFile(p , priGraph);
 }
 
 template<class V, class W>
@@ -109,7 +146,44 @@ double RoutePlanningSystem<V, W>::Sparseness()
 template<class V, class W>
 int RoutePlanningSystem<V, W>::ConnectedComponentCount()
 {
-    return 0;
+
+    int n=priGraph.vertexCount();
+    bool *visited=new bool[n+1];//辅助数组
+    for(int i=0;i<n+1;i++)//初始化
+        visited[i]=false;
+    auto vertexList =priGraph.getVertices();
+    int count = 0;
+    for(int i= 1; i <= n; i++){
+        if(!visited[vertexList[i]]){
+            count++;
+            DFSforCompent(priGraph , visited , vertexList , vertexList[i]);
+        }
+
+    }
+
+    return count-1;
+}
+
+template<class V, class W>
+bool RoutePlanningSystem<V, W>::isHaveLoop()
+{
+    int n=priGraph.vertexCount();
+    bool *visited=new bool[n+1];//辅助数组
+    V *eArray = new V[n+1];//辅助数组
+    for(int i=0;i<n+1;i++){//初始化
+        visited[i]=false;
+        eArray[i] = 0;
+    }
+    auto vertexList =priGraph.getVertices();
+    int count = 0;
+
+    for(int i= 1; i <= n; i++){
+        if(!visited[vertexList[i]]){
+            count++;
+            DFSForLoop(priGraph , visited ,eArray,n, vertexList , vertexList[i]);
+        }
+
+    }
 }
 
 template<class V, class W>
@@ -194,6 +268,21 @@ void RoutePlanningSystem<V, W>::showMaxDistance(V cityName)
     MinSpanTree<V , W> mst(sz);
     graphClient.LongestPath(priGraph , cityName , mst);
     mst.PrintTree();
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::showRangCity(V cityName, W R)
+{
+    auto neibor = priGraph.getNeighbors(cityName);
+    auto *first = neibor.neiborList.getFirst();
+    auto *p = first->rLink;
+    while (p != first) {
+        auto vt = p->data.data;
+        if(priGraph.getWeight(cityName , vt) <= R){
+            cout<<vt<<endl;
+        }
+        p = p->rLink;
+    }
 }
 
 

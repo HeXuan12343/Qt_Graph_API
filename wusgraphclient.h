@@ -11,6 +11,7 @@
 #include"minheap.h"
 #include<QDebug>
 #include<QString>
+#include<QTime>
 using namespace std;
 
 struct Point{
@@ -23,7 +24,7 @@ class WUSGraphClient:public WUSGraph<V,W>
 {
 public:
     WUSGraphClient();
-    void CreatGraphFromFile(char* filepath,WUSGraph<V,W>& g);//从给定文件路径filepath读取
+    void CreatGraphFromFile(const char* filepath,WUSGraph<V,W>& g);//从给定文件路径filepath读取
     int MaxDegree(WUSGraph<V,W>& g);//求g的最大顶点度数
     void Print( WUSGraph<V,W>& g);//输出
     void DFS(WUSGraph<V,W>& g,V& s,void (*visit)(V));//深度优先遍历 访问函数是（*visit）（）
@@ -49,7 +50,7 @@ WUSGraphClient<V, W>::WUSGraphClient()
 }
 
 template<class V, class W>
-void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& g){
+void WUSGraphClient<V,W>::CreatGraphFromFile( const char* filepath,WUSGraph<V,W>& g){
     FILE* fp=fopen(filepath,"r");
     if(fp){
         int n,m;
@@ -72,7 +73,7 @@ void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& g){
 
        //顶点
          int vertex;
-        for(int i=0;i<1;i++){
+        for(int i=0;i<n;i++){
             vector<std::string> S_b;
             std::string s_b;
             char b[25]={0};
@@ -90,6 +91,10 @@ void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& g){
             vertex=QString::fromStdString(S_b[0]).toInt();
             g.addVertex(vertex);
         }
+
+        QTime randtime;
+        randtime =QTime::currentTime();
+        qsrand(randtime.msec()+randtime.second()*1000);
        //边
         int vertex1,vertex2;
         W cost;
@@ -109,7 +114,9 @@ void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& g){
                 }
             }
             vertex1=QString::fromStdString(S_c[0]).toInt();
-            vertex2==QString::fromStdString(S_c[0]).toInt();
+            vertex2=QString::fromStdString(S_c[0]).toInt();
+            int w=qrand()%10000;
+            g.addEdge(vertex1,vertex2,w);
         }
 
     }

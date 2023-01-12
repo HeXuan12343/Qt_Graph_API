@@ -4,6 +4,7 @@
 
 #include<QDebug>
 #include <QFileDialog>
+#include <QRandomGenerator>
 #include <QString>
 #include <iostream>
 #include <windows.h>
@@ -82,10 +83,11 @@ void calculate(RoutePlanningSystem<int , int> &contralSysteam)
             cout<<contralSysteam.Sparseness();
             break;
         case 2:
+            cout<<"连通分量个数为：";
             cout<<contralSysteam.ConnectedComponentCount();
             break;
         case 3:
-            cout<<"环路：";
+            contralSysteam.isHaveLoop();
             break;
         case 4:
             cout<<contralSysteam.maxNeiborCityCount();
@@ -102,8 +104,9 @@ void calculate(RoutePlanningSystem<int , int> &contralSysteam)
         case 6:
             cout<<"请输入起始城市名称："<<endl;
             cin>>name1;
-            contralSysteam.showKruskalForest(name1);
             cout<<"最小生成树"<<endl;
+            contralSysteam.showKruskalForest(name1);
+
             break;
         case 7:
             cout<<"Prim请输入起始城市名称："<<endl;
@@ -134,6 +137,7 @@ void quary(RoutePlanningSystem<int , int> &contralSysteam)
     cout<<"**              ||   查询邻接城市数量3                    ||                    **"<<endl;
     cout<<"**              ||    计算道路的距离4                     ||                    **"<<endl;
     cout<<"**              ||查询从该城市出发可以到达的所有城市5     ||                    **"<<endl;
+    cout<<"**              ||查询从该城市出发规定距离内的所有城市6     ||                    **"<<endl;
     int op = 0;
     int co = 1;
     while(co){
@@ -179,6 +183,13 @@ void quary(RoutePlanningSystem<int , int> &contralSysteam)
             cin>>cityName;
             contralSysteam.getRechableCity(cityName , PrintCity);
             break;
+        case 6:
+            cout<<"请输入要查询的城市名称和范围：";
+            int range;
+            cin>>cityName;
+            cin>>range;
+            contralSysteam.showRangCity(cityName , range);
+            break;
         }
         cout<<endl<<"输入1继续，输入0退出。";
         cin>>co;
@@ -198,83 +209,53 @@ int main(int argc, char *argv[])
     for(int i = 0 ; i < 10; i++){
         contralSysteam.addCity(i+1);
     }
-//    auto vList = g.getVertices();
-//    for(int i = 0; i < 6; i++){
-//        qDebug()<<QString::fromStdString(vList[i]);
-//    }
-//    auto neibor = g.getNeighbors(test4);
-//    auto *first = neibor.neiborList.getFirst();
-//    auto *p = first->rLink;
-//    while (p!= first) {
-//        int index = p->data.data;
-//        qDebug()<<"河南邻接顶点为"<<QString::fromStdString(vList[index]);
-//        p = p->rLink;
-//    }
-    WUSGraph<int,int >g;
-    WUSGraphClient<int , int> gclint;
-    gclint.CreatGraphFromFile("C:/Users/Comet/Desktop/usa.txt",g);
-//    int maxDegree = gclint.MaxDegree(g);
-//    qDebug()<<"获取最大顶点的度"<<maxDegree;
-//    qDebug()<<"DFS test**************";
-//    gclint.DFS(g ,test2, PrintCity);
-//    qDebug()<<"BFS test**************";
-//    gclint.BFS(g , PrintCity);
-//    qDebug()<<"Kruskal test**************";
-//    MinSpanForest<string , int> minForest(6);
-//    gclint.Kruskal(g , minForest);
-//    minForest.PrintTree();
-//    qDebug()<<"Dijkstra test**************";
-//    MinSpanTree<string,int> mst(6);
-//    gclint.Dijkstra(g,test1,mst);
-//    mst.PrintTree();
-//    qDebug()<<"Prim test**************";
-//    MinSpanForest<string , int> minForest_Prim(6);
-//    gclint.Prim(g,test1,minForest_Prim);
-//    minForest_Prim.PrintTree();
-//    gclint.Print(g);
+    contralSysteam.addRoad(1 , 2 , 50);
+    contralSysteam.addRoad(3 , 2 , 10);
+    contralSysteam.addRoad(3 , 4 , 20);
+    contralSysteam.addRoad(3 , 1 , 80);
+    contralSysteam.addRoad(4 , 5, 290);
+    contralSysteam.addRoad(5 , 6 , 320);
+    contralSysteam.addRoad(7 , 4 , 100);
+    contralSysteam.addRoad(7 , 8 , 210);
+    contralSysteam.addRoad(9 , 4 , 20);
+    contralSysteam.addRoad(10 , 5 , 220);
 
-//    contralSysteam.addRoad(1 , 2 , 50);
-//    contralSysteam.addRoad(3 , 2 , 10);
-//    contralSysteam.addRoad(4 , 2 , 60);
-//    contralSysteam.addRoad(6 , 8 , 150);
-//    contralSysteam.addRoad(5 , 9 , 80);
-//    contralSysteam.addRoad(5 , 7 , 160);
+
 
 //    Widget w;
 //    w.show();
-//    showMenu();
-//    int op = 0;
-//    while (1) {
-//        cin>>op;
-//        switch (op) {
-//        case 1:
-//            system("cls");
-//            showInfo(contralSysteam);
-//            system("cls");
-//            showMenu();
-//            break;
-//        case 2:
-//            system("cls");
-//            readFaile(contralSysteam);
-//            system("cls");
-//            showMenu();
-//            break;
-//        case 3:
-//            system("cls");
-//            calculate(contralSysteam);
-//            system("cls");
-//            showMenu();
-//            break;
-//        case 4:
-//            system("cls");
-//            quary(contralSysteam);
-//            system("cls");
-//            showMenu();
-//            break;
-//        }
+    showMenu();
+    int op = 0;
+    while (1) {
+        cin>>op;
+        switch (op) {
+        case 1:
+            system("cls");
+            showInfo(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        case 2:
+            system("cls");
+            readFaile(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        case 3:
+            system("cls");
+            calculate(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        case 4:
+            system("cls");
+            quary(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        }
 
-//    }
-
+    }
     return a.exec();
 }
 
