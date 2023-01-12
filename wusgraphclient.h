@@ -1,6 +1,7 @@
 #ifndef WUSGRAPHCLIENT_H
 #define WUSGRAPHCLIENT_H
 #include<iostream>
+#include<stdio.h>
 #include"wusgraph.h"
 #include"minindexheap.h"
 #include"minspanforest.h"
@@ -9,12 +10,19 @@
 #include"myqueue.h"
 #include"minheap.h"
 #include<QDebug>
+using namespace std;
+
+struct Point{
+    int key;
+    int x,y;
+};
+
 template<class V,class W>
 class WUSGraphClient:public WUSGraph<V,W>
 {
 public:
     WUSGraphClient();
-    void CreatGraphFromFile(std::string filepath,WUSGraph<V,W>& h);//从给定文件路径filepath读取
+    void CreatGraphFromFile(char* filepath,WUSGraph<V,W>& h);//从给定文件路径filepath读取
     int MaxDegree(WUSGraph<V,W>& g);//求g的最大顶点度数
     void Print( WUSGraph<V,W>& g);//输出
     void DFS(WUSGraph<V,W>& g,V& s,void (*visit)(V));//深度优先遍历 访问函数是（*visit）（）
@@ -27,7 +35,7 @@ public:
     void Steiner(const WUSGraph<V,W>& g,int* objectlist,MinSpanForest<V,W> &msf);
 
 private:
-    HashMap<string,int> APImap;
+    HashMap<V,int> APImap;
 };
 
 template<class V, class W>
@@ -43,6 +51,21 @@ WUSGraphClient<V, W>::WUSGraphClient()
     APImap.Insert(p3);
     APImap.Insert(p4);
     APImap.Insert(p5);
+}
+
+template<class V, class W>
+void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& h){
+    FILE* fp=fopen(filepath,"r");
+    if(fp){
+        qDebug()<<"打开成功";
+        char a[50]={0};
+        while(!feof(fp)){
+        memset(a,0,sizeof (a));
+        fread(a,sizeof (char),sizeof (a)-1,fp);
+        qDebug()<<"a="<<a;
+        }
+    }
+
 }
 
 template<class V,class W>
