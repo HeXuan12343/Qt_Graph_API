@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
 //        p = p->rLink;
 //    }
     WUSGraphClient<string , int> gclint;
+//    gclint.CreatGraphFromFile("C:/Users/Comet/Desktop/usa.txt",g);
     int maxDegree = gclint.MaxDegree(g);
     qDebug()<<"获取最大顶点的度"<<maxDegree;
     qDebug()<<"DFS test**************";
@@ -174,23 +175,6 @@ int main(int argc, char *argv[])
     MinSpanForest<string , int> minForest_Prim(6);
     gclint.Prim(g,test1,minForest_Prim);
     minForest_Prim.PrintTree();
-//    qDebug()<<"Kruskal test**************";
-//    MinSpanForest<string , int> minForest(6);
-//    gclint.Kruskal(g , minForest);
-//    minForest.PrintTree();
-//    qDebug()<<"Dijkstra test**************";
-//    MinSpanTree<string,int> mst(6);
-//    gclint.Dijkstra(g,test1,mst);
-//    mst.PrintTree();
-//    qDebug()<<"Prim test**************";
-//    MinSpanForest<string , int> minForest_Prim(6);
-//    gclint.Prim(g,test1,minForest_Prim);
-//    qDebug()<<"LongestPath test**************";
-//    MinSpanTree<string , int> minTree(6);
-//    gclint.LongestPath(g , test1 , minTree);
-//    qDebug()<<"最长路径树为：";
-//    minTree.PrintTree();
-//    qDebug()<<"Print test**************";
     gclint.Print(g);
     return a.exec();
 }
