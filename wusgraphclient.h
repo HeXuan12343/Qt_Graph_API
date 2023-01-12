@@ -10,6 +10,7 @@
 #include"myqueue.h"
 #include"minheap.h"
 #include<QDebug>
+#include<QString>
 using namespace std;
 
 struct Point{
@@ -22,7 +23,7 @@ class WUSGraphClient:public WUSGraph<V,W>
 {
 public:
     WUSGraphClient();
-    void CreatGraphFromFile(char* filepath,WUSGraph<V,W>& h);//从给定文件路径filepath读取
+    void CreatGraphFromFile(char* filepath,WUSGraph<V,W>& g);//从给定文件路径filepath读取
     int MaxDegree(WUSGraph<V,W>& g);//求g的最大顶点度数
     void Print( WUSGraph<V,W>& g);//输出
     void DFS(WUSGraph<V,W>& g,V& s,void (*visit)(V));//深度优先遍历 访问函数是（*visit）（）
@@ -48,16 +49,69 @@ WUSGraphClient<V, W>::WUSGraphClient()
 }
 
 template<class V, class W>
-void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& h){
+void WUSGraphClient<V,W>::CreatGraphFromFile( char* filepath,WUSGraph<V,W>& g){
     FILE* fp=fopen(filepath,"r");
     if(fp){
-        qDebug()<<"打开成功";
-        char a[50]={0};
-        while(!feof(fp)){
+        int n,m;
+       //第一行
+        char a[14]={0};
         memset(a,0,sizeof (a));
         fread(a,sizeof (char),sizeof (a)-1,fp);
-        qDebug()<<"a="<<a;
+        vector<std::string> S_a;
+        std::string s_a;
+        for(int i=0;i<sizeof (a);i++){
+            if(a[i]<='9'&&a[i]>='0')
+                s_a+=a[i];
+            else{
+                S_a.push_back(s_a);
+                s_a="";
+            }
         }
+        n=QString::fromStdString(S_a[0]).toInt();
+        m=QString::fromStdString(S_a[1]).toInt();
+
+       //顶点
+         int vertex;
+        for(int i=0;i<1;i++){
+            vector<std::string> S_b;
+            std::string s_b;
+            char b[25]={0};
+            memset(b,0,sizeof (b));
+            fread(b,sizeof (char),sizeof (b)-1,fp);
+            for(int i=0;i<sizeof (b);i++){
+                if(b[i]<='9'&&b[i]>='0')
+                    s_b+=b[i];
+                else{
+                    if(s_b!="")
+                        S_b.push_back(s_b);
+                    s_b="";
+                }
+            }
+            vertex=QString::fromStdString(S_b[0]).toInt();
+            g.addVertex(vertex);
+        }
+       //边
+        int vertex1,vertex2;
+        W cost;
+        for(int i=0;i<m;i++){
+            vector<std::string> S_c;
+            std::string s_c;
+            char c[17]={0};
+            memset(c,0,sizeof (c));
+            fread(c,sizeof (char),sizeof (c)-1,fp);
+            for(int i=0;i<sizeof (c);i++){
+                if(c[i]<='9'&&c[i]>='0')
+                    s_c+=c[i];
+                else{
+                    if(s_c!="")
+                        S_c.push_back(s_c);
+                    s_c="";
+                }
+            }
+            vertex1=QString::fromStdString(S_c[0]).toInt();
+            vertex2==QString::fromStdString(S_c[0]).toInt();
+        }
+
     }
 
 }
@@ -223,7 +277,6 @@ void WUSGraphClient<V,W>::Kruskal( WUSGraph<V, W> &g, MinSpanForest<V, W> &msf)
             H.Insert(temp);
         }
 
-    count=1;
     while (!H.IsEmpty()) {
         H.Remove(ed);
         u=F.Find(ed.tail);

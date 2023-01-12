@@ -210,8 +210,9 @@ int main(int argc, char *argv[])
 //        qDebug()<<"河南邻接顶点为"<<QString::fromStdString(vList[index]);
 //        p = p->rLink;
 //    }
-//    WUSGraphClient<string , int> gclint;
-//    gclint.CreatGraphFromFile("C:/Users/Comet/Desktop/usa.txt",g);
+    WUSGraph<int,int >g;
+    WUSGraphClient<int , int> gclint;
+    gclint.CreatGraphFromFile("C:/Users/Comet/Desktop/usa.txt",g);
 //    int maxDegree = gclint.MaxDegree(g);
 //    qDebug()<<"获取最大顶点的度"<<maxDegree;
 //    qDebug()<<"DFS test**************";
@@ -232,47 +233,47 @@ int main(int argc, char *argv[])
 //    minForest_Prim.PrintTree();
 //    gclint.Print(g);
 
-    contralSysteam.addRoad(1 , 2 , 50);
-    contralSysteam.addRoad(3 , 2 , 10);
-    contralSysteam.addRoad(4 , 2 , 60);
-    contralSysteam.addRoad(6 , 8 , 150);
-    contralSysteam.addRoad(5 , 9 , 80);
-    contralSysteam.addRoad(5 , 7 , 160);
+//    contralSysteam.addRoad(1 , 2 , 50);
+//    contralSysteam.addRoad(3 , 2 , 10);
+//    contralSysteam.addRoad(4 , 2 , 60);
+//    contralSysteam.addRoad(6 , 8 , 150);
+//    contralSysteam.addRoad(5 , 9 , 80);
+//    contralSysteam.addRoad(5 , 7 , 160);
 
 //    Widget w;
 //    w.show();
-    showMenu();
-    int op = 0;
-    while (1) {
-        cin>>op;
-        switch (op) {
-        case 1:
-            system("cls");
-            showInfo(contralSysteam);
-            system("cls");
-            showMenu();
-            break;
-        case 2:
-            system("cls");
-            readFaile(contralSysteam);
-            system("cls");
-            showMenu();
-            break;
-        case 3:
-            system("cls");
-            calculate(contralSysteam);
-            system("cls");
-            showMenu();
-            break;
-        case 4:
-            system("cls");
-            quary(contralSysteam);
-            system("cls");
-            showMenu();
-            break;
-        }
+//    showMenu();
+//    int op = 0;
+//    while (1) {
+//        cin>>op;
+//        switch (op) {
+//        case 1:
+//            system("cls");
+//            showInfo(contralSysteam);
+//            system("cls");
+//            showMenu();
+//            break;
+//        case 2:
+//            system("cls");
+//            readFaile(contralSysteam);
+//            system("cls");
+//            showMenu();
+//            break;
+//        case 3:
+//            system("cls");
+//            calculate(contralSysteam);
+//            system("cls");
+//            showMenu();
+//            break;
+//        case 4:
+//            system("cls");
+//            quary(contralSysteam);
+//            system("cls");
+//            showMenu();
+//            break;
+//        }
 
-    }
+//    }
 
     return a.exec();
 }
