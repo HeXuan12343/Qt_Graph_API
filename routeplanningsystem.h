@@ -29,11 +29,12 @@ public:
     int NeiborsCount(V cityName);//返回邻接城市数量3.8
     W getRoadDistance(V c1 , V c2);//计算道路的距离3.8
     void getNeiborsCity(V cityName);//输出城市的所有相邻城市3.9
-
     void getRechableCity(V cityName , void (*visit) (V));//输出从该城市出发可以到达的所有城市3.10
     int maxNeiborCityCount();//输出相邻城市数最多的城市数3.11
     void showMinDistance(V c1 , V c2);//输出两个城市之间的最短路径3.12
-
+    void showPrimForest(V cityName);//prim3.14
+    void showKruskalForest(V cityName);//kruskal3.15
+    void showMaxDistance(V cityName);//3.18
 private:
     WUSGraph<V , W> priGraph;
     WUSGraphClient<V , W> graphClient;
@@ -82,13 +83,14 @@ void RoutePlanningSystem<V, W>::ReadFileAndInit(QString FilePath)
 template<class V, class W>
 void RoutePlanningSystem<V, W>::ShowSysteamInfo()
 {
-    int cityCount = priGraph.vertexCount();
-    qDebug()<<"City count is\t"<<cityCount;//输出城市数
-    auto cityArray = priGraph.getVertices();
-    qDebug()<<"城市名称如下:";
-    for(int i = 1 ;i <= cityCount; i++){//输出所有城市
-        qDebug()<<QString::fromStdString(cityArray[i]);
-    }
+//    int cityCount = priGraph.vertexCount();
+//    qDebug()<<"City count is\t"<<cityCount;//输出城市数
+//    auto cityArray = priGraph.getVertices();
+//    qDebug()<<"城市名称如下:";
+//    for(int i = 1 ;i <= cityCount; i++){//输出所有城市
+//        qDebug()<<QString::fromStdString(cityArray[i]);
+//    }
+    graphClient.Print(priGraph);
 }
 
 template<class V, class W>
@@ -102,6 +104,12 @@ double RoutePlanningSystem<V, W>::Sparseness()
     }
     double degreeAverage = degreeSum / CityCount;
     return degreeAverage / (CityCount - 1);
+}
+
+template<class V, class W>
+int RoutePlanningSystem<V, W>::ConnectedComponentCount()
+{
+    return 0;
 }
 
 template<class V, class W>
@@ -143,13 +151,49 @@ void RoutePlanningSystem<V, W>::getNeiborsCity(V cityName)
 template<class V, class W>
 void RoutePlanningSystem<V, W>::getRechableCity(V cityName, void (*visit)(V))
 {
-    graphClient.DFS(priGraph , visit);
+    graphClient.DFS(priGraph , cityName ,visit);
 }
 
 template<class V, class W>
 int RoutePlanningSystem<V, W>::maxNeiborCityCount()
 {
-    return this->MaxDegree(priGraph);
+    return graphClient.MaxDegree(priGraph);
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::showMinDistance(V c1, V c2)
+{
+    int sz = priGraph.vertexCount();
+    MinSpanTree<int , int> mst(sz);
+    graphClient.Dijkstra(priGraph , c1 ,mst);
+    mst.PrintTree();
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::showPrimForest(V cityName)
+{
+    int sz = priGraph.vertexCount();
+    MinSpanForest<V , W> msf(sz);
+    graphClient.Prim(priGraph , cityName , msf);
+    msf.PrintTree();
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::showKruskalForest(V cityName)
+{
+    int sz = priGraph.vertexCount();
+    MinSpanForest<V , W> msf(sz);
+    graphClient.Kruskal(priGraph , msf);
+    msf.PrintTree();
+}
+
+template<class V, class W>
+void RoutePlanningSystem<V, W>::showMaxDistance(V cityName)
+{
+    int sz = priGraph.vertexCount();
+    MinSpanTree<V , W> mst(sz);
+    graphClient.LongestPath(priGraph , cityName , mst);
+    mst.PrintTree();
 }
 
 

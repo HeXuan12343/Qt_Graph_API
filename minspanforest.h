@@ -77,7 +77,7 @@ template<class V, class W>
 void MinSpanForest<V, W>::PrintTree()
 {
     for(int i = 1; i < currentSize; i++){
-        qDebug()<<edgeList[i];
+        std::cout<<"“"<<edgeList[i]<<"”"<<"->";
     }
 }
 

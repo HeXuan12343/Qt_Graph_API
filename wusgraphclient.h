@@ -41,16 +41,10 @@ private:
 template<class V, class W>
 WUSGraphClient<V, W>::WUSGraphClient()
 {
-    std::pair<string , int> p1("北京" , 1);
-    std::pair<string , int> p2("南京" , 2);
-    std::pair<string , int> p3("河北" , 3);
-    std::pair<string , int> p4("河南" , 4);
-    std::pair<string , int> p5("日本" , 5);
-    APImap.Insert(p1);
-    APImap.Insert(p2);
-    APImap.Insert(p3);
-    APImap.Insert(p4);
-    APImap.Insert(p5);
+    for(int i = 0; i < 10; i++){
+        std::pair<int , int> p(i+1 , i+1);
+        APImap.Insert(p);
+    }
 }
 
 template<class V, class W>
@@ -93,9 +87,9 @@ void WUSGraphClient<V,W>::Print( WUSGraph<V,W>& g){
     WQUPCUFset F(n+1);
     set<MinSpanForestNode<V,W>> Edge;
     V* verlist=g.getVertices();
-    qDebug()<<"所有顶点为：";
+    cout<<"所有城市为："<<endl;
     for(int i = 1; i < n+1; i++){
-        qDebug()<<QString::fromStdString(verlist[i]);
+        cout<<verlist[i]<<endl;
     }
   //取边
     for(int i=1;i<n+1;i++){
@@ -115,12 +109,12 @@ void WUSGraphClient<V,W>::Print( WUSGraph<V,W>& g){
             p = p->rLink;
         }
     }
-    qDebug()<<"所有边为：";
+    cout<<"所有道路为："<<endl;
     typename set<MinSpanForestNode<V,W>>::iterator it;
     for(it=Edge.begin();it!=Edge.end();it++){
         auto v1 = (*it).head;
         auto v2 = (*it).tail;
-        qDebug()<<QString::fromStdString(verlist[v2])<<","<<QString::fromStdString(verlist[v1]);
+        cout<<verlist[v2]<<","<<verlist[v1]<<endl;
     }
 
 }
@@ -230,14 +224,13 @@ void WUSGraphClient<V,W>::Kruskal( WUSGraph<V, W> &g, MinSpanForest<V, W> &msf)
         }
 
     count=1;
-    while (count<n) {
+    while (!H.IsEmpty()) {
         H.Remove(ed);
         u=F.Find(ed.tail);
         v=F.Find(ed.head);
         if(u!=v){
             F.Union(u,v);
             msf.Insert(ed);
-            count++;
         }
     }
 
@@ -345,7 +338,7 @@ void WUSGraphClient<V,W>::Prim( WUSGraph<V, W> &g,V &s, MinSpanForest<V, W> &msf
                 break;
         }
     }
-    }while (count<n);
+    }while (count<m);
 }
 
 template<class V, class W>
