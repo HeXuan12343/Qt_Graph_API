@@ -182,12 +182,12 @@ int ExpandableLinkedHashTable<K,E>::getdivisor(int tablesize) {
 
 template<class K, class E>
 int ExpandableLinkedHashTable<K,E>::hashcode(K key) {
-    int h=0;
-    for(int i=0;i<key.size();i++)
-        h=((unsigned char)key[0]-129)*190 +
-                ((unsigned char)key[1]-64) - (unsigned char)key[1]/128;
+//    int h=0;
+//    for(int i=0;i<key.size();i++)
+//        h=((unsigned char)key[0]-129)*190 +
+//                ((unsigned char)key[1]-64) - (unsigned char)key[1]/128;
     int t = getdivisor(TableSize);
-    return h%t;
+    return key%t;
 }
 
 #endif // EXPANDABLELINKEDHASHTABLE_H

@@ -3,9 +3,12 @@
 #include <QApplication>
 
 #include<QDebug>
-
+#include <QFileDialog>
+#include <QString>
 #include <iostream>
-
+#include <windows.h>
+#include <process.h>
+#include <conio.h>
 
 using namespace std;
 
@@ -19,179 +22,224 @@ using namespace std;
 #include "wusgraphclient.h"
 #include "minspanforest.h"
 #include "minspantree.h"
+#include "routeplanningsystem.h"
 
-void PrintCity(string v)
+void PrintCity(int v)
 {
-    qDebug()<<QString::fromStdString(v);
+    cout<<v<<",";
+}
+
+void showMenu()
+{
+    cout<<"****************欢迎使用城市路径规划系统！*********************"<<endl;
+    cout<<"**              ========================                     **"<<endl;
+    cout<<"**              ||        菜单         ||                    **"<<endl;
+    cout<<"**              ||      显示信息1      ||                    **"<<endl;
+    cout<<"**              ||   导入交通信息2     ||                    **"<<endl;
+    cout<<"**              ||      规划计算3      ||                    **"<<endl;
+    cout<<"**              ||        查询4        ||                    **"<<endl;
+    cout<<"请输入菜单选项：";
+}
+
+void showInfo(RoutePlanningSystem<int , int> &contralSysteam)
+{
+    contralSysteam.ShowSysteamInfo();
+    cout<<"按任意键返回主菜单。。。。。";
+    getch();
+    cout<<"正在返回,请稍候。。。。。。";
+    Sleep(1000);
+}
+
+void readFaile(RoutePlanningSystem<int , int> &contralSysteam)
+{
+    QString failePath = QFileDialog::getOpenFileName();
+    contralSysteam.ReadFileAndInit(failePath);
+    cout<<"按任意键返回主菜单。。。。。";
+    getch();
+    cout<<"正在返回,请稍候。。。。。。";
+    Sleep(1000);
+}
+
+void calculate(RoutePlanningSystem<int , int> &contralSysteam)
+{
+    cout<<"**              ===========================                     **"<<endl;
+    cout<<"**              ||  计算图的稀疏程度1       ||                  **"<<endl;
+    cout<<"**              ||  地图的连通分量个数2     ||                  **"<<endl;
+    cout<<"**              ||       输出环路3          ||                  **"<<endl;
+    cout<<"**              ||求相邻的城市数最多的城市4 ||                  **"<<endl;
+    cout<<"**              ||        Dijstral 5        ||                  **"<<endl;
+    cout<<"**              ||        最小生成树 6      ||                  **"<<endl;
+    cout<<"**              ||        Prim 7            ||                  **"<<endl;
+    cout<<"**              ||        最长路径 8        ||                  **"<<endl;
+    cout<<"请输入菜单选项：";
+    int op = 0;
+    int co = 1;
+    while (co) {
+        cout<<"请输入菜单选项：";
+        cin>>op;
+        switch (op) {
+        case 1:
+            cout<<contralSysteam.Sparseness();
+            break;
+        case 2:
+            cout<<contralSysteam.ConnectedComponentCount();
+            break;
+        case 3:
+            cout<<"环路：";
+            break;
+        case 4:
+            cout<<contralSysteam.maxNeiborCityCount();
+            break;
+        case 5:
+            cout<<"请输入起始城市名称："<<endl;
+            int name1;
+            cin>>name1;
+            cout<<"请输入终点城市名称："<<endl;
+            int name2;
+            cin>>name2;
+            contralSysteam.showMinDistance(name1 , name2);
+            break;
+        case 6:
+            cout<<"请输入起始城市名称："<<endl;
+            cin>>name1;
+            contralSysteam.showKruskalForest(name1);
+            cout<<"最小生成树"<<endl;
+            break;
+        case 7:
+            cout<<"Prim请输入起始城市名称："<<endl;
+            cin>>name1;
+            contralSysteam.showPrimForest(name1);
+        case 8:
+            cout<<"最长路径";
+            cout<<"请输入起始城市名称："<<endl;
+            cin>>name1;
+            contralSysteam.showMaxDistance(name1);
+        }
+
+        cout<<endl<<"输入1继续，输入0退出。";
+        cin>>co;
+
+    }
+    cout<<"按任意键返回主菜单。。。。。";
+    getch();
+    cout<<"正在返回,请稍候。。。。。。";
+    Sleep(1000);
+}
+
+void quary(RoutePlanningSystem<int , int> &contralSysteam)
+{
+    cout<<"**              ============================================                    **"<<endl;
+    cout<<"**              ||   城市是否在系统中1                    ||                    **"<<endl;
+    cout<<"**              ||   道路是否在系统中2                    ||                    **"<<endl;
+    cout<<"**              ||   查询邻接城市数量3                    ||                    **"<<endl;
+    cout<<"**              ||    计算道路的距离4                     ||                    **"<<endl;
+    cout<<"**              ||查询从该城市出发可以到达的所有城市5     ||                    **"<<endl;
+    int op = 0;
+    int co = 1;
+    while(co){
+        cout<<"请输入菜单选项：";
+        cin>>op;
+        switch (op) {
+        case 1:
+            cout<<"请输入要查询的城市名称：";
+            int cityName;
+            cin>>cityName;
+            if(contralSysteam.isInCity(cityName)){
+                cout<<"该城市在图中。";
+            }
+            else {
+                cout<<"该城市不在图中。";
+            }
+            break;
+        case 2:
+            cout<<"请输入要城市1和城市2名称：";
+            int name1,name2;
+            cin>>name1;
+            cin>>name2;
+            if(contralSysteam.isInRoad(name1 , name2)){
+                cout<<"该道路在图中。";
+            }
+            else {
+                cout<<"该道路不在图中。";
+            }
+            break;
+        case 3:
+            cout<<"请输入要查询的城市名称：";
+            cin>>cityName;
+            cout<<contralSysteam.NeiborsCount(cityName);
+            break;
+        case 4:
+            cout<<"请输入要城市1和城市2名称：";
+            cin>>name1;
+            cin>>name2;
+            cout<<contralSysteam.getRoadDistance(name1 , name2);
+            break;
+        case 5:
+            cout<<"请输入要查询的城市名称：";
+            cin>>cityName;
+            contralSysteam.getRechableCity(cityName , PrintCity);
+            break;
+        }
+        cout<<endl<<"输入1继续，输入0退出。";
+        cin>>co;
+    }
+    cout<<"按任意键返回主菜单。。。。。";
+    getch();
+    cout<<"正在返回,请稍候。。。。。。";
+    Sleep(1000);
 }
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
-    Widget w;
-    w.show();
-/***** 双链表测试 *****/
-//    DbLinkedList<std::string , int> l;
-//    for(int i = 0; i < 20; i++){
-//        l.Append(i);
-//    }
-//    qDebug()<<l.Size();
-//    ExpandableArrayList<int> array(5);
-//    for(int i = 0; i < 5; i++){
-//        array[i] = i;
-//    }
-//    for(int i = 0; i < 5; i++){
-//        qDebug()<<array[i];
-//    }
-//    array.resizeList(10);
-//    for(int i = 0; i < 10; i++){
-//        array[i] = i;
-//    }
-//    for(int i = 0; i < 10; i++){
-//        qDebug()<<array[i];
-//    }
-/*****   HashMap测试  *****/
-//    HashMap<std::string , int> m;
-//    std::pair<std::string , int> ptest;
-//    std::pair<std::string , int> ptest2;
-//    ptest.first = "北京";
-//    ptest.second = 5;
-//    ptest2.first = "北方";
-//    ptest2.second = 2;
-//    m.Insert(ptest);
-//    m.Insert(ptest2);
-//    std::string test = "北京";
-//    std::string test2 = "北方";
-//    std::string test3="南京";
-//    m.Clear();
-//    qDebug()<<m.getValue(test);
-//    qDebug()<<m.getValue(test2);
-
-/*****  wushgraph测试 *****/
-//    WUSGraph<std::string , int> g(5);
-//    std::string test1 = "北京";
-//    std::string test2 = "南京";
-//    std::string test3 = "河北";
-//    std::string test4 = "河南";
-//    std::string test5 = "日本";
-//    g.addVertex(test1);
-//    g.addVertex(test2);
-//    g.addVertex(test3);
-//    g.addVertex(test4);
-//    g.addVertex(test5);
-//    auto *vList = g.getVertices();
-//    for(int i = 0; i < 6; i++)
-//    {
-//        qDebug()<<QString::fromStdString(vList[i]);
-//    }
-//    g.removeVertex("北京");
-//    qDebug()<<"删除顶点测试,"<<"remove"<<'\t'<<"北京"<<'\t'<<"1";
-//    auto *vList2 = g.getVertices();
-//    for(int i = 0; i < 6; i++)
-//    {
-//        qDebug()<<QString::fromStdString(vList2[i]);
-//    }
-//    g.addEdge(test1 , test2 , 50);
-//    g.addEdge(test1 , test5 , 150);
-//    g.addEdge(test3 , test2 , 60);
-//    bool isEd = g.isEdge(test3 , test2);
-//    qDebug()<<isEd;
-//    qDebug()<<"删除边测试"<<"remove<河北,南京>"<<'\t'<<"<3,2>";
-//    g.removeEdge(test3 , test2);
-//    bool isEd2 = g.isEdge(test3 , test2);
-//    qDebug()<<isEd2;
-//    qDebug()<<"getWeight测试,"<<"cost for <北京,日本>"<<'\t'<<"150";
-//    auto cost = g.getWeight(test1 , test5);
-//    qDebug()<<cost;
-//    qDebug()<<"getNeibors测试,Neibors of 北京"<<'\t'<<"2\t5";
-//    Neighbors<int , int> neibor = g.getNeighbors(test1);
-//    auto neiborList = neibor.neiborList;
-//    auto costList = neibor.costList;
-//    auto neiborFirst = neiborList.getFirst();
-//    auto costFirst = costList.getFirst();
-//    auto np = neiborFirst->rLink;
-//    auto cp = costFirst->rLink;
-//    while (np != neiborFirst) {
-//        qDebug()<<np->data.data;
-//        np = np->rLink;
-//    }
-//    qDebug()<<"权值为：";
-//    while (cp != costFirst) {
-//        qDebug()<<cp->data;
-//        cp = cp->rLink;
-//    }
-/*****wusgraphclient测试*****/
-    WUSGraph<std::string , int> g(5);
-    std::string test1 = "北京";
-    std::string test2 = "南京";
-    std::string test3 = "河北";
-    std::string test4 = "河南";
-    std::string test5 = "日本";
-    g.addVertex(test1);
-    g.addVertex(test2);
-    g.addVertex(test3);
-    g.addVertex(test4);
-    g.addVertex(test5);
-    g.addEdge(test1 , test2 , 50);
-    g.addEdge(test3 , test2 , 60);
-    g.addEdge(test2 , test5 , 180);
-    g.addEdge(test3 , test4 , 40);
-    g.addEdge(test1 , test5 , 900);
-    auto vList = g.getVertices();
-    for(int i = 0; i < 6; i++){
-        qDebug()<<QString::fromStdString(vList[i]);
+    SetConsoleOutputCP(CP_UTF8);
+    RoutePlanningSystem<int , int> contralSysteam(10);
+    for(int i = 0 ; i < 10; i++){
+        contralSysteam.addCity(i+1);
     }
-//    auto vList = g.getVertices();
-//    for(int i = 0; i < 6; i++){
-//        qDebug()<<QString::fromStdString(vList[i]);
-//    }
-//    auto neibor = g.getNeighbors(test4);
-//    auto *first = neibor.neiborList.getFirst();
-//    auto *p = first->rLink;
-//    while (p!= first) {
-//        int index = p->data.data;
-//        qDebug()<<"河南邻接顶点为"<<QString::fromStdString(vList[index]);
-//        p = p->rLink;
-//    }
-    WUSGraphClient<string , int> gclint;
-    int maxDegree = gclint.MaxDegree(g);
-    qDebug()<<"获取最大顶点的度"<<maxDegree;
-    qDebug()<<"DFS test**************";
-    gclint.DFS(g ,test2, PrintCity);
-    qDebug()<<"BFS test**************";
-    gclint.BFS(g , PrintCity);
-    qDebug()<<"Kruskal test**************";
-    MinSpanForest<string , int> minForest(6);
-    gclint.Kruskal(g , minForest);
-    minForest.PrintTree();
-    qDebug()<<"Dijkstra test**************";
-    MinSpanTree<string,int> mst(6);
-    gclint.Dijkstra(g,test1,mst);
-    mst.PrintTree();
-    qDebug()<<"Prim test**************";
-    MinSpanForest<string , int> minForest_Prim(6);
-    gclint.Prim(g,test1,minForest_Prim);
-    minForest_Prim.PrintTree();
-//    qDebug()<<"Kruskal test**************";
-//    MinSpanForest<string , int> minForest(6);
-//    gclint.Kruskal(g , minForest);
-//    minForest.PrintTree();
-//    qDebug()<<"Dijkstra test**************";
-//    MinSpanTree<string,int> mst(6);
-//    gclint.Dijkstra(g,test1,mst);
-//    mst.PrintTree();
-//    qDebug()<<"Prim test**************";
-//    MinSpanForest<string , int> minForest_Prim(6);
-//    gclint.Prim(g,test1,minForest_Prim);
-//    qDebug()<<"LongestPath test**************";
-//    MinSpanTree<string , int> minTree(6);
-//    gclint.LongestPath(g , test1 , minTree);
-//    qDebug()<<"最长路径树为：";
-//    minTree.PrintTree();
-//    qDebug()<<"Print test**************";
-    gclint.Print(g);
+    contralSysteam.addRoad(1 , 2 , 50);
+    contralSysteam.addRoad(3 , 2 , 10);
+    contralSysteam.addRoad(4 , 2 , 60);
+    contralSysteam.addRoad(6 , 8 , 150);
+    contralSysteam.addRoad(5 , 9 , 80);
+    contralSysteam.addRoad(5 , 7 , 160);
+
+//    Widget w;
+//    w.show();
+    showMenu();
+    int op = 0;
+    while (1) {
+        cin>>op;
+        switch (op) {
+        case 1:
+            system("cls");
+            showInfo(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        case 2:
+            system("cls");
+            readFaile(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        case 3:
+            system("cls");
+            calculate(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        case 4:
+            system("cls");
+            quary(contralSysteam);
+            system("cls");
+            showMenu();
+            break;
+        }
+
+    }
+
     return a.exec();
 }
 

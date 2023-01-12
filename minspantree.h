@@ -3,6 +3,7 @@
 
 #define DefaltSize 100000
 #include<QDebug>
+#include <iostream>
 
 template <class V , class W>
 struct MSTEdgeNode { //树边结点的类定义
@@ -51,7 +52,7 @@ template<class V, class W>
 void MinSpanTree<V,W>::PrintTree()
 {
     for(int i = 1; i < currentSize; i++){
-        qDebug()<<edgevalue[i];
+        std::cout<<"“"<<edgevalue[i]<<"”"<<"->";
     }
 }
 

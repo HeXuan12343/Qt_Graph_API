@@ -308,7 +308,7 @@ bool WUSGraph<V, W>::isEdge(V ver1, V ver2)
     if(edgMap.getValue(key) == std::pair<int , int>())
         return false;
     else
-        return true;;
+        return true;
 }
 
 template<typename V, typename W>
